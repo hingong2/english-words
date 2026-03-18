@@ -7,106 +7,7 @@
     <title>English Words</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Nanum+Gothic:wght@400;700;800&display=swap');
-
-        body {
-            font-family: 'Nanum Gothic', sans-serif;
-            background-color: #f0f9ff;
-            user-select: none;
-            overflow-x: hidden;
-        }
-
-        .word-card {
-            transition: all 0.3s ease;
-        }
-
-        .tab-active {
-            background-color: #3b82f6 !important;
-            color: white !important;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-        }
-
-        .quiz-option,
-        .match-card,
-        .letter-card {
-            transition: all 0.2s;
-            cursor: pointer;
-        }
-
-        .quiz-option:active,
-        .match-card:active,
-        .letter-card:active {
-            transform: scale(0.95);
-        }
-
-        .match-selected {
-            border-color: #3b82f6;
-            background-color: #eff6ff;
-            transform: scale(1.05);
-        }
-
-        /* 정답 시 색상 클래스들 */
-        .match-correct {
-            pointer-events: none;
-            transform: scale(1);
-            opacity: 1;
-        }
-
-        .matched-color-0 {
-            background-color: #dcfce7 !important;
-            border-color: #22c55e !important;
-            color: #166534 !important;
-        }
-
-        .matched-color-1 {
-            background-color: #fef9c3 !important;
-            border-color: #eab308 !important;
-            color: #854d0e !important;
-        }
-
-        .matched-color-2 {
-            background-color: #fce7f3 !important;
-            border-color: #ec4899 !important;
-            color: #9d174d !important;
-        }
-
-        .matched-color-3 {
-            background-color: #f3e8ff !important;
-            border-color: #a855f7 !important;
-            color: #6b21a8 !important;
-        }
-
-        .matched-color-4 {
-            background-color: #ffedd5 !important;
-            border-color: #f97316 !important;
-            color: #9a3412 !important;
-        }
-
-        @keyframes bounce {
-
-            0%,
-            100% {
-                transform: translateY(0);
-            }
-
-            50% {
-                transform: translateY(-10px);
-            }
-        }
-
-        .correct-anim {
-            animation: bounce 0.5s ease infinite;
-        }
-
-        /* 스펠링 게임 전용 스타일 */
-        .letter-grid {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            gap: 8px;
-        }
-    </style>
+    <link rel="stylesheet" href="style.css">
 </head>
 
 <body class="p-4 md:p-8 flex items-center justify-center min-h-screen">
@@ -137,7 +38,7 @@
         <!-- Header -->
         <div id="header"
             class="bg-blue-500 p-6 text-center text-white transition-colors duration-500 relative flex justify-center items-center">
-            <!-- Home Button: 이제 학습 메인 화면으로 이동합니다 -->
+            <!-- Home Button -->
             <button onclick="resetToHome()" class="absolute left-6 text-white hover:text-blue-100 transition-colors"
                 title="단어장 메인으로">
                 <i class="fas fa-home text-xl"></i>
@@ -154,14 +55,34 @@
             </button>
         </div>
 
+        <!-- Week Tabs -->
+        <div id="weekTabsContainer" class="bg-blue-100 px-4 py-2 border-b-2 border-blue-200">
+            <div id="weekTabs" class="flex gap-2 overflow-x-auto pb-1 hide-scrollbar">
+                <button onclick="switchWeek(1)"
+                    class="flex-shrink-0 px-4 py-2 rounded-full font-bold text-sm bg-blue-600 text-white border-2 border-transparent transition-all">Week 1</button>
+                <button onclick="switchWeek(2)"
+                    class="flex-shrink-0 px-4 py-2 rounded-full font-bold text-sm bg-white text-blue-600 border-2 border-blue-200 transition-all shadow-sm hover:bg-blue-50">Week 2</button>
+                <button onclick="switchWeek(3)"
+                    class="flex-shrink-0 px-4 py-2 rounded-full font-bold text-sm bg-white text-blue-600 border-2 border-blue-200 transition-all shadow-sm hover:bg-blue-50">Week 3</button>
+                <button onclick="switchWeek(4)"
+                    class="flex-shrink-0 px-4 py-2 rounded-full font-bold text-sm bg-white text-blue-600 border-2 border-blue-200 transition-all shadow-sm hover:bg-blue-50">Week 4</button>
+            </div>
+        </div>
+
         <!-- Day Tabs -->
         <div id="dayTabs" class="flex p-4 gap-2 bg-blue-50">
             <button onclick="switchDay('Mon')" id="tabMon"
-                class="flex-1 py-3 rounded-2xl font-bold text-blue-600 bg-white border-2 border-blue-200 transition-all tab-active">Mon</button>
+                class="flex-1 py-2 rounded-2xl font-bold text-blue-600 bg-white border-2 border-blue-200 transition-all tab-active flex flex-col items-center justify-center">
+                <span>Mon</span><span id="dateMon" class="text-xs font-medium opacity-80 mt-0.5">3/2</span>
+            </button>
             <button onclick="switchDay('Wed')" id="tabWed"
-                class="flex-1 py-3 rounded-2xl font-bold text-blue-600 bg-white border-2 border-blue-200 transition-all">Wed</button>
+                class="flex-1 py-2 rounded-2xl font-bold text-blue-600 bg-white border-2 border-blue-200 transition-all flex flex-col items-center justify-center">
+                <span>Wed</span><span id="dateWed" class="text-xs font-medium opacity-80 mt-0.5">3/4</span>
+            </button>
             <button onclick="switchDay('Fri')" id="tabFri"
-                class="flex-1 py-3 rounded-2xl font-bold text-blue-600 bg-white border-2 border-blue-200 transition-all">Fri</button>
+                class="flex-1 py-2 rounded-2xl font-bold text-blue-600 bg-white border-2 border-blue-200 transition-all flex flex-col items-center justify-center">
+                <span>Fri</span><span id="dateFri" class="text-xs font-medium opacity-80 mt-0.5">3/6</span>
+            </button>
         </div>
 
         <!-- Main Content Area -->
@@ -284,13 +205,34 @@
                     class="fas fa-times text-2xl"></i></button>
         </div>
 
-        <div class="p-4 flex gap-2 bg-gray-100 shrink-0">
+        <!-- Admin Week Tabs -->
+        <div class="bg-gray-200 px-4 py-2 border-b border-gray-300 shrink-0">
+            <div id="adminWeekTabs" class="flex gap-2 overflow-x-auto pb-1 hide-scrollbar">
+                <button onclick="switchAdminWeek(1)"
+                    class="flex-shrink-0 px-3 py-1.5 rounded-full font-bold text-xs bg-blue-600 text-white border-2 border-blue-600 transition-all">Week 1</button>
+                <button onclick="switchAdminWeek(2)"
+                    class="flex-shrink-0 px-3 py-1.5 rounded-full font-bold text-xs bg-white text-gray-600 border-2 border-gray-300 transition-all hover:bg-gray-50">Week 2</button>
+                <button onclick="switchAdminWeek(3)"
+                    class="flex-shrink-0 px-3 py-1.5 rounded-full font-bold text-xs bg-white text-gray-600 border-2 border-gray-300 transition-all hover:bg-gray-50">Week 3</button>
+                <button onclick="switchAdminWeek(4)"
+                    class="flex-shrink-0 px-3 py-1.5 rounded-full font-bold text-xs bg-white text-gray-600 border-2 border-gray-300 transition-all hover:bg-gray-50">Week 4</button>
+            </div>
+        </div>
+
+        <!-- Admin Day Tabs -->
+        <div id="adminDayTabs" class="p-4 flex gap-2 bg-gray-100 shrink-0 border-b border-gray-300">
             <button onclick="switchAdminDay('Mon')" id="adminTabMon"
-                class="flex-1 py-2 rounded-xl font-bold bg-white text-gray-600 border border-gray-300 tab-active">Mon</button>
+                class="flex-1 py-2.5 rounded-xl font-bold bg-gray-800 text-white border border-gray-800 tab-active transition-colors flex flex-col items-center justify-center leading-tight">
+                <span>Mon</span><span id="adminDateMon" class="text-[10px] font-normal opacity-80 mt-0.5">3/2</span>
+            </button>
             <button onclick="switchAdminDay('Wed')" id="adminTabWed"
-                class="flex-1 py-2 rounded-xl font-bold bg-white text-gray-600 border border-gray-300">Wed</button>
+                class="flex-1 py-2.5 rounded-xl font-bold bg-white text-gray-600 border border-gray-300 transition-colors flex flex-col items-center justify-center leading-tight">
+                <span>Wed</span><span id="adminDateWed" class="text-[10px] font-normal opacity-80 mt-0.5">3/4</span>
+            </button>
             <button onclick="switchAdminDay('Fri')" id="adminTabFri"
-                class="flex-1 py-2 rounded-xl font-bold bg-white text-gray-600 border border-gray-300">Fri</button>
+                class="flex-1 py-2.5 rounded-xl font-bold bg-white text-gray-600 border border-gray-300 transition-colors flex flex-col items-center justify-center leading-tight">
+                <span>Fri</span><span id="adminDateFri" class="text-[10px] font-normal opacity-80 mt-0.5">3/6</span>
+            </button>
         </div>
 
         <div class="p-4 bg-gray-50 border-b shrink-0">
@@ -316,416 +258,7 @@
         <div id="feedbackIcon" class="text-9xl"></div>
     </div>
 
-    <script>
-        const wordData = {
-            Mon: [
-                { word: "eraser", meaning: "지우개", example: "I have an eraser.", korEx: "나는 지우개가 있어요." },
-                { word: "ruler", meaning: "자", example: "This is a long ruler.", korEx: "이것은 긴 자예요." }
-            ],
-            Wed: [
-                { word: "pencil-case", meaning: "필통", example: "Put your pen in the pencil-case.", korEx: "필통에 펜을 넣으세요." },
-                { word: "notebook", meaning: "공책", example: "Write your name on the notebook.", korEx: "공책에 이름을 쓰세요." }
-            ],
-            Fri: [
-                { word: "desk", meaning: "책상", example: "The book is on the desk.", korEx: "책이 책상 위에 있어요." },
-                { word: "chair", meaning: "의자", example: "Sit on the chair.", korEx: "의자에 앉으세요." }
-            ]
-        };
-
-        let userName = "나";
-        let currentDay = 'Mon';
-        let adminCurrentDay = 'Mon';
-        let usVoice = null;
-        let quizType = '';
-        let quizState = { index: 0, score: 0, items: [], selected: null, currentInput: "" };
-
-        function initVoices() {
-            const voices = window.speechSynthesis.getVoices();
-            usVoice = voices.find(v => v.lang === 'en-US' && v.name.includes('Natural')) ||
-                voices.find(v => v.lang === 'en-US' && v.name.includes('Google')) ||
-                voices.find(v => v.lang === 'en-US') ||
-                voices[0];
-        }
-        window.speechSynthesis.onvoiceschanged = initVoices;
-
-        function speak(text, isExciting = false) {
-            if (!window.speechSynthesis) return;
-            window.speechSynthesis.cancel();
-            const utterance = new SpeechSynthesisUtterance(text);
-            if (usVoice) utterance.voice = usVoice;
-            utterance.lang = 'en-US';
-
-            if (isExciting) {
-                utterance.pitch = 1.4;
-                utterance.rate = 1.05;
-            } else {
-                utterance.pitch = 1.15;
-                utterance.rate = 0.8;
-            }
-            window.speechSynthesis.speak(utterance);
-        }
-
-        function startApp() {
-            const input = document.getElementById('nameInput');
-            if (input.value.trim() !== "") {
-                userName = input.value.trim();
-            }
-
-            document.getElementById('displayUserName').innerText = userName;
-            document.getElementById('nameEntryScreen').classList.add('hidden');
-            document.getElementById('mainApp').classList.remove('hidden');
-
-            speak("Welcome, " + userName + "! Let's study English!", true);
-            switchDay('Mon');
-        }
-
-        // --- 수정된 기능: 홈 버튼 클릭 시 단어 리스트 메인으로 이동 ---
-        function resetToHome() {
-            // 퀴즈나 결과 화면 등 다른 화면에 있을 때만 확인 후 메인 리스트로 이동
-            const isAtStudyView = !document.getElementById('studyView').classList.contains('hidden');
-
-            if (isAtStudyView) {
-                // 이미 메인 화면이라면 아무것도 하지 않음
-                return;
-            }
-
-            window.speechSynthesis.cancel();
-
-            // 모든 퀴즈 및 게임 관련 화면 숨기기
-            document.getElementById('quizMenu').classList.add('hidden');
-            document.getElementById('quizViewChoice').classList.add('hidden');
-            document.getElementById('quizViewMatch').classList.add('hidden');
-            document.getElementById('quizViewScramble').classList.add('hidden');
-            document.getElementById('resultView').classList.add('hidden');
-
-            // 메인 단어장 학습 화면 및 탭 보이기
-            document.getElementById('studyView').classList.remove('hidden');
-            document.getElementById('dayTabs').classList.remove('hidden');
-
-            // 헤더 스타일 초기화
-            document.getElementById('header').style.backgroundColor = '#3b82f6';
-            document.getElementById('headerTitle').innerHTML = `<i class="fas fa-graduation-cap text-yellow-300 mr-2"></i>${userName}의 영어 단어장`;
-
-            switchDay(currentDay);
-        }
-
-        // --- Admin Functions ---
-        function openAdmin() {
-            document.getElementById('mainApp').classList.add('hidden');
-            document.getElementById('adminLoginScreen').classList.remove('hidden');
-            document.getElementById('adminPassword').value = '';
-            document.getElementById('adminLoginError').classList.add('hidden');
-        }
-
-        function closeAdmin() {
-            document.getElementById('adminLoginScreen').classList.add('hidden');
-            document.getElementById('adminDashboard').classList.add('hidden');
-            document.getElementById('mainApp').classList.remove('hidden');
-            switchDay(currentDay);
-        }
-
-        function loginAdmin() {
-            const pwd = document.getElementById('adminPassword').value;
-            if (pwd === "2222") {
-                document.getElementById('adminLoginScreen').classList.add('hidden');
-                document.getElementById('adminDashboard').classList.remove('hidden');
-                switchAdminDay('Mon');
-            } else {
-                document.getElementById('adminLoginError').classList.remove('hidden');
-            }
-        }
-
-        function switchAdminDay(day) {
-            adminCurrentDay = day;
-            document.querySelectorAll('[id^="adminTab"]').forEach(b => {
-                if (b.id === 'adminTab' + day) {
-                    b.classList.add('bg-gray-800', 'text-white', 'border-gray-800');
-                    b.classList.remove('bg-white', 'text-gray-600', 'border-gray-300');
-                } else {
-                    b.classList.remove('bg-gray-800', 'text-white', 'border-gray-800');
-                    b.classList.add('bg-white', 'text-gray-600', 'border-gray-300');
-                }
-            });
-            renderAdminList();
-        }
-
-        function renderAdminList() {
-            const list = document.getElementById('adminWordList');
-            list.innerHTML = '';
-            wordData[adminCurrentDay].forEach((item, index) => {
-                const div = document.createElement('div');
-                div.className = 'flex justify-between items-center p-3 border-b mb-2 bg-gray-50 rounded-lg';
-                div.innerHTML = `
-                    <div>
-                        <p class="font-bold">${item.word} <span class="text-sm font-normal text-gray-500">(${item.meaning})</span></p>
-                        <p class="text-xs text-gray-400 truncate max-w-[200px]">${item.example}</p>
-                    </div>
-                    <button onclick="deleteWord(${index})" class="text-red-500 p-2 hover:bg-red-50 rounded"><i class="fas fa-trash"></i></button>
-                `;
-                list.appendChild(div);
-            });
-        }
-
-        function addWord() {
-            const word = document.getElementById('newWord').value.trim();
-            const meaning = document.getElementById('newMeaning').value.trim();
-            const example = document.getElementById('newExample').value.trim() || 'No example';
-            const korEx = document.getElementById('newKorEx').value.trim() || '예문 없음';
-
-            if (!word || !meaning) {
-                alert("단어와 뜻은 필수입니다.");
-                return;
-            }
-
-            wordData[adminCurrentDay].push({ word, meaning, example, korEx });
-
-            document.getElementById('newWord').value = '';
-            document.getElementById('newMeaning').value = '';
-            document.getElementById('newExample').value = '';
-            document.getElementById('newKorEx').value = '';
-
-            renderAdminList();
-        }
-
-        function deleteWord(index) {
-            if (confirm("정말 삭제하시겠습니까?")) {
-                wordData[adminCurrentDay].splice(index, 1);
-                renderAdminList();
-            }
-        }
-
-        function switchDay(day) {
-            currentDay = day;
-            document.querySelectorAll('#dayTabs button').forEach(b => b.classList.toggle('tab-active', b.id === 'tab' + day));
-            const list = document.getElementById('wordList');
-            list.innerHTML = '';
-            wordData[day].forEach((item, i) => {
-                const card = document.createElement('div');
-                card.className = 'word-card bg-white border-2 border-gray-100 rounded-2xl p-5 shadow-sm space-y-4';
-                card.innerHTML = `
-                    <div class="flex justify-between items-start">
-                        <div>
-                            <h2 class="text-3xl font-black text-gray-800 lowercase">${item.word}</h2>
-                            <p class="text-blue-600 font-bold">${item.meaning}</p>
-                        </div>
-                        <button onclick="speak('${item.word}')" class="bg-blue-100 text-blue-600 p-3 rounded-full hover:bg-blue-200 transition-colors shadow-sm">
-                            <i class="fas fa-volume-up"></i>
-                        </button>
-                    </div>
-                    
-                    <div class="bg-blue-50 p-4 rounded-xl border-l-4 border-blue-400">
-                        <div class="flex justify-between items-center mb-1">
-                            <p class="text-gray-700 font-bold italic">"${item.example}"</p>
-                            <button onclick="speak('${item.example.replace(/'/g, "\\'")}')" class="text-blue-400 hover:text-blue-600 ml-2">
-                                <i class="fas fa-play-circle text-lg"></i>
-                            </button>
-                        </div>
-                        <p class="text-gray-500 text-sm font-medium">${item.korEx}</p>
-                    </div>
-                `;
-                list.appendChild(card);
-            });
-        }
-
-        function openQuizMenu() {
-            document.getElementById('studyView').classList.add('hidden');
-            document.getElementById('quizMenu').classList.remove('hidden');
-            document.getElementById('dayTabs').classList.add('hidden');
-        }
-
-        function exitQuiz() {
-            document.getElementById('studyView').classList.remove('hidden');
-            document.querySelectorAll('[id^="quizView"], #quizMenu, #resultView').forEach(el => el.classList.add('hidden'));
-            document.getElementById('dayTabs').classList.remove('hidden');
-            document.getElementById('header').style.backgroundColor = '#3b82f6';
-            document.getElementById('headerTitle').innerHTML = `<i class="fas fa-graduation-cap text-yellow-300 mr-2"></i>${userName}의 영어 단어장`;
-            switchDay(currentDay);
-        }
-
-        function startQuiz(type) {
-            quizType = type;
-            quizState.index = 0;
-            quizState.score = 0;
-            document.getElementById('quizMenu').classList.add('hidden');
-
-            if (type === 'choice') {
-                document.getElementById('quizViewChoice').classList.remove('hidden');
-                document.getElementById('header').style.backgroundColor = '#3b82f6';
-                quizState.items = [...wordData[currentDay]].sort(() => Math.random() - 0.5);
-                renderChoice();
-            } else if (type === 'match') {
-                document.getElementById('quizViewMatch').classList.remove('hidden');
-                document.getElementById('header').style.backgroundColor = '#22c55e';
-                renderMatch();
-            } else if (type === 'scramble') {
-                document.getElementById('quizViewScramble').classList.remove('hidden');
-                document.getElementById('header').style.backgroundColor = '#a855f7';
-                quizState.items = [...wordData[currentDay]].sort(() => Math.random() - 0.5);
-                renderScramble();
-            }
-        }
-
-        function renderChoice() {
-            const item = quizState.items[quizState.index];
-            document.getElementById('choiceWord').innerText = item.word.toLowerCase();
-            document.getElementById('choiceInfo').innerHTML = `<span class="bg-blue-100 text-blue-600 px-3 py-1 rounded-full text-xs font-bold">${quizState.index + 1} / ${quizState.items.length}</span>`;
-            document.getElementById('choiceSpeakBtn').onclick = () => speak(item.word);
-
-            let opts = [item.meaning];
-            const others = Object.values(wordData).flat().map(i => i.meaning).filter(m => m !== item.meaning);
-            opts.push(...others.sort(() => Math.random() - 0.5).slice(0, 2));
-            opts.sort(() => Math.random() - 0.5);
-
-            const container = document.getElementById('choiceOptions');
-            container.innerHTML = '';
-            opts.forEach(opt => {
-                const btn = document.createElement('button');
-                btn.className = 'quiz-option w-full bg-white border-2 border-gray-100 py-4 rounded-2xl font-bold text-gray-700 hover:border-blue-400';
-                btn.innerText = opt;
-                btn.onclick = () => checkAnswer(opt === item.meaning);
-                container.appendChild(btn);
-            });
-        }
-
-        function renderMatch() {
-            const currentWords = wordData[currentDay];
-            let cards = [];
-            currentWords.forEach((w, i) => {
-                cards.push({ id: i, text: w.word.toLowerCase(), type: 'en' });
-                cards.push({ id: i, text: w.meaning, type: 'ko' });
-            });
-            cards.sort(() => Math.random() - 0.5);
-
-            const grid = document.getElementById('matchGrid');
-            grid.innerHTML = '';
-            cards.forEach(card => {
-                const div = document.createElement('div');
-                div.className = 'match-card bg-white border-2 border-gray-200 p-4 rounded-xl text-center font-bold text-gray-700 shadow-sm flex items-center justify-center min-h-[80px]';
-                div.innerText = card.text;
-                div.onclick = () => handleMatchClick(card, div);
-                grid.appendChild(div);
-            });
-            quizState.matchedCount = 0;
-            quizState.totalPairs = currentWords.length;
-        }
-
-        function handleMatchClick(card, element) {
-            if (element.classList.contains('match-correct')) return;
-            if (quizState.selected && quizState.selected.element === element) return;
-
-            element.classList.add('match-selected');
-
-            if (!quizState.selected) {
-                quizState.selected = { card, element };
-            } else {
-                const first = quizState.selected;
-                if (first.card.id === card.id && first.card.type !== card.type) {
-                    const colorClass = `matched-color-${card.id % 5}`;
-                    setTimeout(() => {
-                        element.classList.remove('match-selected');
-                        first.element.classList.remove('match-selected');
-                        element.classList.add('match-correct', colorClass);
-                        first.element.classList.add('match-correct', colorClass);
-
-                        quizState.matchedCount++;
-                        if (quizState.matchedCount === quizState.totalPairs) {
-                            setTimeout(showResult, 1000);
-                        }
-                    }, 200);
-
-                    const cheers = ["Yes!", "Good job!", "Perfect!", "Wow!", "Nice!"];
-                    const randomCheer = cheers[Math.floor(Math.random() * cheers.length)];
-                    speak(randomCheer, true);
-                    showFeedback(true);
-                } else {
-                    setTimeout(() => {
-                        element.classList.remove('match-selected');
-                        first.element.classList.remove('match-selected');
-                    }, 500);
-                    showFeedback(false);
-                    speak("Try again!", false);
-                }
-                quizState.selected = null;
-            }
-        }
-
-        function renderScramble() {
-            const item = quizState.items[quizState.index];
-            quizState.currentInput = "";
-            document.getElementById('scrambleMeaning').innerText = item.meaning;
-            document.getElementById('scrambleDisplay').innerText = "";
-            document.getElementById('scrambleSpeakBtn').onclick = () => speak(item.word);
-
-            const letters = item.word.toLowerCase().split('').sort(() => Math.random() - 0.5);
-            const container = document.getElementById('scrambleLetters');
-            container.innerHTML = '';
-            letters.forEach((l, i) => {
-                const btn = document.createElement('button');
-                btn.className = 'letter-card w-12 h-12 bg-white border-2 border-purple-200 rounded-xl font-black text-xl text-purple-600 shadow-sm lowercase';
-                btn.innerText = l;
-                btn.onclick = () => {
-                    // 철자 클릭 시 해당 알파벳 발음 재생
-                    speak(l);
-
-                    quizState.currentInput += l;
-                    document.getElementById('scrambleDisplay').innerText = quizState.currentInput.toLowerCase();
-                    btn.style.visibility = 'hidden';
-                    if (quizState.currentInput.length === item.word.length) {
-                        checkAnswer(quizState.currentInput.toLowerCase() === item.word.toLowerCase());
-                    }
-                };
-                container.appendChild(btn);
-            });
-        }
-
-        function resetScramble() {
-            renderScramble();
-        }
-
-        function checkAnswer(isCorrect) {
-            showFeedback(isCorrect);
-            if (isCorrect) {
-                const greatCheers = ["Amazing!", "You're a genius!", "Unbelievable!", "Great job!", "So smart!"];
-                const randomGreat = greatCheers[Math.floor(Math.random() * greatCheers.length)];
-                speak(randomGreat, true);
-
-                if (quizType !== 'match') {
-                    setTimeout(() => {
-                        if (quizState.index < quizState.items.length - 1) {
-                            quizState.index++;
-                            quizType === 'choice' ? renderChoice() : renderScramble();
-                        } else {
-                            showResult();
-                        }
-                    }, 1200);
-                }
-            } else {
-                speak("It's okay! Try one more time!", false);
-                if (quizType === 'scramble') {
-                    setTimeout(resetScramble, 800);
-                }
-            }
-        }
-
-        function showFeedback(isCorrect) {
-            const fb = document.getElementById('feedback');
-            const icon = document.getElementById('feedbackIcon');
-            icon.innerText = isCorrect ? "⭕" : "❌";
-            icon.className = isCorrect ? "text-green-500 correct-anim text-9xl" : "text-red-500 text-9xl";
-            fb.classList.remove('opacity-0');
-            setTimeout(() => fb.classList.add('opacity-0'), 700);
-        }
-
-        function showResult() {
-            document.querySelectorAll('[id^="quizView"]').forEach(el => el.classList.add('hidden'));
-            document.getElementById('resultView').classList.remove('hidden');
-            speak("Wow! You finished everything! You are an English superstar!", true);
-        }
-
-        window.onload = () => {
-            initVoices();
-        };
-    </script>
+    <script src="app.js"></script>
 </body>
 
 </html>

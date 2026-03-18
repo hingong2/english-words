@@ -1,0 +1,98 @@
+@import url('https://fonts.googleapis.com/css2?family=Nanum+Gothic:wght@400;700;800&display=swap');
+
+body {
+    font-family: 'Nanum Gothic', sans-serif;
+    background-color: #f0f9ff;
+    user-select: none;
+    overflow-x: hidden;
+}
+
+.word-card {
+    transition: all 0.3s ease;
+}
+
+.tab-active {
+    background-color: #3b82f6 !important;
+    color: white !important;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+.quiz-option,
+.match-card,
+.letter-card {
+    transition: all 0.2s;
+    cursor: pointer;
+}
+
+.quiz-option:active,
+.match-card:active,
+.letter-card:active {
+    transform: scale(0.95);
+}
+
+.match-selected {
+    border-color: #3b82f6;
+    background-color: #eff6ff;
+    transform: scale(1.05);
+}
+
+/* 정답 시 색상 클래스들 */
+.match-correct {
+    pointer-events: none;
+    transform: scale(1);
+    opacity: 1;
+}
+
+.matched-color-0 {
+    background-color: #dcfce7 !important;
+    border-color: #22c55e !important;
+    color: #166534 !important;
+}
+
+.matched-color-1 {
+    background-color: #fef9c3 !important;
+    border-color: #eab308 !important;
+    color: #854d0e !important;
+}
+
+.matched-color-2 {
+    background-color: #fce7f3 !important;
+    border-color: #ec4899 !important;
+    color: #9d174d !important;
+}
+
+.matched-color-3 {
+    background-color: #f3e8ff !important;
+    border-color: #a855f7 !important;
+    color: #6b21a8 !important;
+}
+
+.matched-color-4 {
+    background-color: #ffedd5 !important;
+    border-color: #f97316 !important;
+    color: #9a3412 !important;
+}
+
+@keyframes bounce {
+
+    0%,
+    100% {
+        transform: translateY(0);
+    }
+
+    50% {
+        transform: translateY(-10px);
+    }
+}
+
+.correct-anim {
+    animation: bounce 0.5s ease infinite;
+}
+
+/* 스펠링 게임 전용 스타일 */
+.letter-grid {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 8px;
+}
