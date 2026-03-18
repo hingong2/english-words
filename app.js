@@ -51,9 +51,7 @@ const wordData = {
             { word: "backpack", meaning: "배낭", example: "My backpack is heavy.", korEx: "내 배낭은 무거워요." },
             { word: "map", meaning: "지도", example: "Look at the map.", korEx: "지도를 보세요." }
         ],
-        Fri: [
-            { word: "study", meaning: "공부하다", example: "Let's study together.", korEx: "우리 함께 공부해요." } // Monthly Test용 복습 단어 임의 추가
-        ]
+        Fri: []
     }
 };
 
@@ -134,7 +132,7 @@ function startApp() {
     document.getElementById('mainApp').classList.remove('hidden');
 
     speak("Welcome, " + userName + "! Let's study English!", true);
-    
+
     // 오늘 날짜에 맞는 주차와 요일 자동 계산 및 탭 적용
     const initDate = calculateCurrentDate();
     switchWeek(initDate.week, initDate.day);
@@ -210,9 +208,9 @@ function switchAdminWeek(week) {
             b.classList.add('bg-white', 'text-gray-600', 'border-gray-300');
         }
     });
-    
+
     // Update dates for admin day tabs
-    if(dateMapping[week]) {
+    if (dateMapping[week]) {
         document.getElementById('adminDateMon').innerText = dateMapping[week].Mon;
         document.getElementById('adminDateWed').innerText = dateMapping[week].Wed;
         document.getElementById('adminDateFri').innerText = dateMapping[week].Fri;
@@ -300,7 +298,7 @@ function switchWeek(week, forceDay = 'Mon') {
     });
 
     // Update dates for main day tabs
-    if(dateMapping[week]) {
+    if (dateMapping[week]) {
         document.getElementById('dateMon').innerText = dateMapping[week].Mon;
         document.getElementById('dateWed').innerText = dateMapping[week].Wed;
         document.getElementById('dateFri').innerText = dateMapping[week].Fri;
@@ -577,7 +575,7 @@ function showResult() {
 
 window.onload = () => {
     initVoices();
-    
+
     // 첫 화면 이름 입력 시 엔터 키로 바로 시작
     document.getElementById('nameInput').addEventListener('keydown', (e) => {
         if (e.key === 'Enter') {
