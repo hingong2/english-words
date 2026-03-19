@@ -70,6 +70,10 @@
                 <button onclick="switchWeek(4)"
                     class="flex-shrink-0 px-4 py-2 rounded-full font-bold text-sm bg-white text-blue-600 border-2 border-blue-200 transition-all shadow-sm hover:bg-blue-50">Week
                     4</button>
+                <button onclick="startMonthlyQuizMenu()"
+                    class="flex-shrink-0 px-4 py-2 rounded-full font-bold text-sm bg-purple-500 text-white border-2 border-transparent transition-all shadow-sm hover:bg-purple-600 ml-auto">
+                    <i class="fas fa-trophy mr-1"></i>Monthly Test
+                </button>
             </div>
         </div>
 
@@ -179,6 +183,7 @@
                 <div class="text-7xl mb-6 correct-anim">⭐</div>
                 <h2 class="text-3xl font-black text-gray-800 mb-2">대단해요! 최고예요!</h2>
                 <p class="text-gray-600 mb-6 font-medium">오늘 공부도 완벽하게 성공!</p>
+                <div id="finalScoreDisplay" class="mb-8"></div>
                 <button onclick="exitQuiz()"
                     class="w-full bg-blue-500 text-white font-black py-4 rounded-2xl shadow-lg text-lg">기분 좋게
                     돌아가기</button>
@@ -266,7 +271,7 @@
         <div id="feedbackIcon" class="text-9xl"></div>
     </div>
 
-    <script src="app.js"></script>
+    <script src="app_v2.js"></script>
 </body>
 
 </html>

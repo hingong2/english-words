@@ -69,7 +69,29 @@ let adminCurrentWeek = 1;
 let adminCurrentDay = 'Mon';
 let usVoice = null;
 let quizType = '';
-let quizState = { index: 0, score: 0, items: [], selected: null, currentInput: "" };
+let isMonthlyQuiz = false;
+let isReviewMode = false;
+let quizState = { index: 0, score: 0, items: [], selected: null, currentInput: "", wrongItems: [] };
+
+function getAllMonthlyWords() {
+    const allWords = [];
+    Object.values(wordData).forEach(week => {
+        Object.values(week).forEach(dayWords => {
+            allWords.push(...dayWords);
+        });
+    });
+    return allWords;
+}
+
+function startMonthlyQuizMenu() {
+    const allWords = getAllMonthlyWords();
+    if (allWords.length === 0) {
+        alert("이번 달에 공부한 단어가 아직 없어요!");
+        return;
+    }
+    isMonthlyQuiz = true;
+    openQuizMenu();
+}
 
 function initVoices() {
     const voices = window.speechSynthesis.getVoices();
@@ -149,6 +171,7 @@ function resetToHome() {
     }
 
     window.speechSynthesis.cancel();
+    isMonthlyQuiz = false; // Reset monthly flag
 
     // 모든 퀴즈 및 게임 관련 화면 숨기기
     document.getElementById('quizMenu').classList.add('hidden');
@@ -359,9 +382,9 @@ function switchDay(day) {
 }
 
 function openQuizMenu() {
-    const currentList = wordData[currentWeek][currentDay];
+    const currentList = isMonthlyQuiz ? getAllMonthlyWords() : wordData[currentWeek][currentDay];
     if (currentList.length === 0) {
-        alert("오늘은 게임할 단어가 없어요!");
+        alert("게임할 단어가 없어요!");
         return;
     }
 
@@ -369,6 +392,9 @@ function openQuizMenu() {
     document.getElementById('quizMenu').classList.remove('hidden');
     document.getElementById('weekTabsContainer').classList.add('hidden');
     document.getElementById('dayTabs').classList.add('hidden');
+
+    const menuTitle = isMonthlyQuiz ? "🏆 월간 종합 테스트 🏆" : "어떤 모험을 떠날까요?";
+    document.querySelector('#quizMenu h3').innerText = menuTitle;
 }
 
 function exitQuiz() {
@@ -378,6 +404,8 @@ function exitQuiz() {
     document.getElementById('dayTabs').classList.remove('hidden');
     document.getElementById('header').style.backgroundColor = '#3b82f6';
     document.getElementById('headerTitle').innerHTML = `<i class="fas fa-graduation-cap text-yellow-300 mr-2"></i>${userName}의 영어 단어장`;
+    isMonthlyQuiz = false; // Reset monthly flag
+    isReviewMode = false; // Reset review flag
     switchDay(currentDay);
 }
 
@@ -385,12 +413,24 @@ function startQuiz(type) {
     quizType = type;
     quizState.index = 0;
     quizState.score = 0;
+    quizState.wrongItems = [];
+    isReviewMode = false;
     document.getElementById('quizMenu').classList.add('hidden');
+
+    let words = isMonthlyQuiz ? getAllMonthlyWords() : [...wordData[currentWeek][currentDay]];
+
+    // 월간 테스트라면 랜덤하게 20단어만 선택 (너무 많으면 힘드니까요)
+    if (isMonthlyQuiz && words.length > 20) {
+        words = words.sort(() => Math.random() - 0.5).slice(0, 20);
+    } else {
+        words = words.sort(() => Math.random() - 0.5);
+    }
+
+    quizState.items = words;
 
     if (type === 'choice') {
         document.getElementById('quizViewChoice').classList.remove('hidden');
         document.getElementById('header').style.backgroundColor = '#3b82f6';
-        quizState.items = [...wordData[currentWeek][currentDay]].sort(() => Math.random() - 0.5);
         renderChoice();
     } else if (type === 'match') {
         document.getElementById('quizViewMatch').classList.remove('hidden');
@@ -399,7 +439,6 @@ function startQuiz(type) {
     } else if (type === 'scramble') {
         document.getElementById('quizViewScramble').classList.remove('hidden');
         document.getElementById('header').style.backgroundColor = '#a855f7';
-        quizState.items = [...wordData[currentWeek][currentDay]].sort(() => Math.random() - 0.5);
         renderScramble();
     }
 }
@@ -438,7 +477,7 @@ function renderChoice() {
 }
 
 function renderMatch() {
-    const currentWords = wordData[currentWeek][currentDay];
+    const currentWords = quizState.items;
     let cards = [];
     currentWords.forEach((w, i) => {
         cards.push({ id: i, text: w.word.toLowerCase(), type: 'en' });
@@ -479,6 +518,7 @@ function handleMatchClick(card, element) {
                 first.element.classList.add('match-correct', colorClass);
 
                 quizState.matchedCount++;
+                quizState.score++; // 점수 추가
                 if (quizState.matchedCount === quizState.totalPairs) {
                     setTimeout(showResult, 1000);
                 }
@@ -535,25 +575,41 @@ function resetScramble() {
 
 function checkAnswer(isCorrect) {
     showFeedback(isCorrect);
+    const item = quizState.items[quizState.index];
+
     if (isCorrect) {
+        quizState.score++;
         const greatCheers = ["Amazing!", "You're a genius!", "Unbelievable!", "Great job!", "So smart!"];
         const randomGreat = greatCheers[Math.floor(Math.random() * greatCheers.length)];
         speak(randomGreat, true);
+    } else {
+        if (isMonthlyQuiz || isReviewMode) {
+            quizState.wrongItems.push(item);
+        }
+        speak("It's okay!", false);
+    }
 
-        if (quizType !== 'match') {
+    if (quizType !== 'match') {
+        // 월간 테스트거나 리뷰 모드면 틀려도 다음으로 넘어감
+        const shouldSkip = isMonthlyQuiz || isReviewMode;
+        console.log("checkAnswer - isCorrect:", isCorrect, "isMonthlyQuiz:", isMonthlyQuiz, "isReviewMode:", isReviewMode, "shouldSkip:", shouldSkip);
+        
+        if (isCorrect || shouldSkip) {
             setTimeout(() => {
                 if (quizState.index < quizState.items.length - 1) {
                     quizState.index++;
+                    console.log("Moving to next question:", quizState.index);
                     quizType === 'choice' ? renderChoice() : renderScramble();
                 } else {
+                    console.log("No more questions, showing results.");
                     showResult();
                 }
-            }, 1200);
-        }
-    } else {
-        speak("It's okay! Try one more time!", false);
-        if (quizType === 'scramble') {
-            setTimeout(resetScramble, 800);
+            }, 1000);
+        } else {
+            // 일일 퀴즈는 오답 시 해당 문제에 머물며 다시 풀기 (스캐램블 전용)
+            if (quizType === 'scramble') {
+                setTimeout(resetScramble, 800);
+            }
         }
     }
 }
@@ -570,7 +626,55 @@ function showFeedback(isCorrect) {
 function showResult() {
     document.querySelectorAll('[id^="quizView"]').forEach(el => el.classList.add('hidden'));
     document.getElementById('resultView').classList.remove('hidden');
+
+    const totalQuestions = quizState.items.length;
+    const finalScore = quizState.score;
+
+    const resultMsg = isMonthlyQuiz
+        ? `한 달 동안 배운 단어 중 ${totalQuestions}개를 테스트했어요!`
+        : `오늘 공부도 완벽하게 성공!`;
+    
+    document.querySelector('#resultView p').innerText = resultMsg;
+    document.getElementById('finalScoreDisplay').innerHTML = `
+        <div class="bg-blue-50 border-2 border-blue-200 rounded-3xl p-6 mb-8 text-center shadow-inner">
+            <h3 class="text-gray-500 font-bold mb-1">나의 점수는?</h3>
+            <div class="text-6xl font-black text-blue-600 mb-2">
+                ${finalScore} / ${totalQuestions}
+            </div>
+            <p class="text-blue-400 font-bold">정답을 맞혔어요! 짝짝짝!</p>
+        </div>
+    `;
+
+    // 틀린 문제가 있으면 다시 풀기 버튼 추가
+    if (quizState.wrongItems.length > 0) {
+        const retryBtn = document.createElement('button');
+        retryBtn.className = "w-full bg-red-400 hover:bg-red-500 text-white font-black py-4 rounded-2xl shadow-lg text-lg mb-4 transition-transform active:scale-95 flex items-center justify-center gap-2";
+        retryBtn.innerHTML = `<i class="fas fa-redo"></i> 틀린 문제 다시 풀기 (${quizState.wrongItems.length})`;
+        retryBtn.onclick = startReviewQuiz;
+        document.getElementById('finalScoreDisplay').appendChild(retryBtn);
+    }
+
     speak("Wow! You finished everything! You are an English superstar!", true);
+}
+
+function startReviewQuiz() {
+    isReviewMode = true;
+    quizState.items = [...quizState.wrongItems];
+    quizState.wrongItems = [];
+    quizState.index = 0;
+    quizState.score = 0;
+    
+    document.getElementById('resultView').classList.add('hidden');
+    if (quizType === 'choice') {
+        document.getElementById('quizViewChoice').classList.remove('hidden');
+        renderChoice();
+    } else if (quizType === 'scramble') {
+        document.getElementById('quizViewScramble').classList.remove('hidden');
+        renderScramble();
+    } else {
+        // 매치는 일단 패스하거나 전체 다시 풀기
+        startQuiz(quizType);
+    }
 }
 
 window.onload = () => {
