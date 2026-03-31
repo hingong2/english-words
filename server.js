@@ -145,7 +145,6 @@ app.post('/api/words', async (req, res) => {
     }
 });
 
-// DELETE a word
 app.delete('/api/words/:id', async (req, res) => {
     try {
         const { id } = req.params;
