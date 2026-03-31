@@ -1,59 +1,43 @@
-const wordData = {
-    1: { // Week 1 (3/4 ~ 3/6)
-        Wed: [
-            { word: "balloon", meaning: "풍선", example: "I have a big balloon.", korEx: "나는 큰 풍선이 있어요." },
-            { word: "bike", meaning: "자전거", example: "I ride my bike.", korEx: "나는 자전거를 타요." },
-            { word: "doll", meaning: "인형", example: "The doll is cute.", korEx: "그 인형은 귀여워요." }
-        ],
-        Fri: [
-            { word: "train", meaning: "기차", example: "The train is long.", korEx: "기차는 길어요." },
-            { word: "robot", meaning: "로봇", example: "Look at my robot.", korEx: "내 로봇을 보세요." },
-            { word: "teddy-bear", meaning: "곰인형", example: "I love my teddy-bear.", korEx: "나는 내 곰인형을 사랑해요." }
-        ],
-        Mon: [] // 3월 시작 전
-    },
-    2: { // Week 2 (3/9 ~ 3/13)
-        Mon: [
-            { word: "orange", meaning: "주황색", example: "The ball is orange.", korEx: "공은 주황색이에요." },
-            { word: "pink", meaning: "분홍색", example: "I like pink flowers.", korEx: "나는 분홍색 꽃을 좋아해요." },
-            { word: "brown", meaning: "갈색", example: "The bear is brown.", korEx: "그 곰은 갈색이에요." }
-        ],
-        Wed: [
-            { word: "black", meaning: "검은색", example: "I have a black hat.", korEx: "나는 검은 모자가 있어요." },
-            { word: "white", meaning: "하얀색", example: "The milk is white.", korEx: "우유는 하얀색이에요." },
-            { word: "purple", meaning: "보라색", example: "I like purple grapes.", korEx: "나는 보라색 포도를 좋아해요." }
-        ],
-        Fri: [
-            { word: "pencil", meaning: "연필", example: "I write with my pencil.", korEx: "나는 연필로 글을 써요." },
-            { word: "crayon", meaning: "크레파스", example: "Color with your crayon.", korEx: "크레파스로 색칠하세요." }
-        ]
-    },
-    3: { // Week 3 (3/16 ~ 3/20)
-        Mon: [
-            { word: "eraser", meaning: "지우개", example: "I have an eraser.", korEx: "나는 지우개가 있어요." },
-            { word: "ruler", meaning: "자", example: "This is a long ruler.", korEx: "이것은 긴 자예요." }
-        ],
-        Wed: [
-            { word: "pencil-case", meaning: "필통", example: "Put it in the pencil-case.", korEx: "그것을 필통에 넣으세요." },
-            { word: "notebook", meaning: "공책", example: "Write on the notebook.", korEx: "공책에 쓰세요." }
-        ],
-        Fri: [
-            { word: "desk", meaning: "책상", example: "The book is on the desk.", korEx: "책이 책상 위에 있어요." },
-            { word: "chair", meaning: "의자", example: "Sit on the chair.", korEx: "의자에 앉으세요." }
-        ]
-    },
-    4: { // Week 4 (3/23 ~ 3/27)
-        Mon: [
-            { word: "whiteboard", meaning: "화이트보드", example: "Look at the whiteboard.", korEx: "화이트보드를 보세요." },
-            { word: "computer", meaning: "컴퓨터", example: "Use the computer.", korEx: "컴퓨터를 사용하세요." }
-        ],
-        Wed: [
-            { word: "backpack", meaning: "배낭", example: "My backpack is heavy.", korEx: "내 배낭은 무거워요." },
-            { word: "map", meaning: "지도", example: "Look at the map.", korEx: "지도를 보세요." }
-        ],
-        Fri: []
-    }
+console.log('app_v2.js: Loading start...');
+const API_URL = 'http://localhost:3005/api';
+let wordData = {
+    1: { Mon: [], Wed: [], Fri: [] },
+    2: { Mon: [], Wed: [], Fri: [] },
+    3: { Mon: [], Wed: [], Fri: [] },
+    4: { Mon: [], Wed: [], Fri: [] }
 };
+
+async function fetchAllWords() {
+    try {
+        const response = await fetch(`${API_URL}/words`);
+        if (!response.ok) throw new Error('Network response was not ok');
+        const data = await response.json();
+        
+        // Reset wordData
+        wordData = {
+            1: { Mon: [], Wed: [], Fri: [] },
+            2: { Mon: [], Wed: [], Fri: [] },
+            3: { Mon: [], Wed: [], Fri: [] },
+            4: { Mon: [], Wed: [], Fri: [] }
+        };
+        
+        data.forEach(item => {
+            if (wordData[item.week] && wordData[item.week][item.day]) {
+                wordData[item.week][item.day].push({
+                    id: item.id,
+                    word: item.word,
+                    meaning: item.meaning,
+                    example: item.example,
+                    korEx: item.korEx
+                });
+            }
+        });
+        
+        console.log('Data synced from DB');
+    } catch (err) {
+        console.error('Error fetching words:', err);
+    }
+}
 
 const dateMapping = {
     1: { Mon: "3/2", Wed: "3/4", Fri: "3/6" },
@@ -63,8 +47,10 @@ const dateMapping = {
 };
 
 let userName = "나";
+let userId = null; // 신규: DB 유저 ID 저장을 위한 변수
 let currentWeek = 1;
 let currentDay = 'Mon';
+let adminSelectedDate = new Date().toISOString().split('T')[0];
 let adminCurrentWeek = 1;
 let adminCurrentDay = 'Mon';
 let usVoice = null;
@@ -119,15 +105,19 @@ function speak(text, isExciting = false) {
     window.speechSynthesis.speak(utterance);
 }
 
-function calculateCurrentDate() {
-    const today = new Date();
-    // 2026년 3월 기준 (월은 0부터 시작하므로 2가 3월)
-    if (today.getFullYear() !== 2026 || today.getMonth() !== 2) {
+function getWeekAndDayFromDate(dateStr) {
+    const dateObj = new Date(dateStr);
+    if (isNaN(dateObj.getTime())) return { week: 1, day: 'Mon' };
+
+    const month = dateObj.getMonth();
+    const year = dateObj.getFullYear();
+    const date = dateObj.getDate();
+    const dayOfWeek = dateObj.getDay();
+
+    // 2026년 3월 기준 (시스템 고정 로직 유지)
+    if (year !== 2026 || month !== 2) {
         return { week: 1, day: 'Mon' };
     }
-
-    const date = today.getDate();
-    const dayOfWeek = today.getDay();
 
     let week = 1;
     if (date < 9) week = 1;
@@ -136,17 +126,31 @@ function calculateCurrentDate() {
     else week = 4;
 
     let day = 'Mon';
-    if (dayOfWeek === 1 || dayOfWeek === 2) day = 'Mon'; // 월, 화 -> Mon
-    else if (dayOfWeek === 3 || dayOfWeek === 4) day = 'Wed'; // 수, 목 -> Wed
-    else if (dayOfWeek === 5 || dayOfWeek === 6 || dayOfWeek === 0) day = 'Fri'; // 금, 토, 일 -> Fri
+    if (dayOfWeek === 1 || dayOfWeek === 2) day = 'Mon';
+    else if (dayOfWeek === 3 || dayOfWeek === 4) day = 'Wed';
+    else if (dayOfWeek === 5 || dayOfWeek === 6 || dayOfWeek === 0) day = 'Fri';
 
     return { week, day };
 }
 
-function startApp() {
+async function startApp() {
     const input = document.getElementById('nameInput');
     if (input.value.trim() !== "") {
         userName = input.value.trim();
+    }
+
+    // 신규: 서버에 유저 등록/로그인 요청
+    try {
+        const userRes = await fetch(`${API_URL}/users`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ name: userName })
+        });
+        const userData = await userRes.json();
+        userId = userData.user_id;
+        console.log('User logged in with ID:', userId);
+    } catch (err) {
+        console.error('Error logging in user:', err);
     }
 
     document.getElementById('displayUserName').innerText = userName;
@@ -156,8 +160,13 @@ function startApp() {
     speak("Welcome, " + userName + "! Let's study English!", true);
 
     // 오늘 날짜에 맞는 주차와 요일 자동 계산 및 탭 적용
-    const initDate = calculateCurrentDate();
-    switchWeek(initDate.week, initDate.day);
+    const todayStr = new Date().toISOString().split('T')[0];
+    const initDate = getWeekAndDayFromDate(todayStr);
+    
+    // 초기 데이터 로딩 후 앱 시작
+    fetchAllWords().then(() => {
+        switchWeek(initDate.week, initDate.day);
+    });
 }
 
 // --- 수정된 기능: 홈 버튼 클릭 시 단어 리스트 메인으로 이동 ---
@@ -213,10 +222,67 @@ function loginAdmin() {
     if (pwd === "2222") {
         document.getElementById('adminLoginScreen').classList.add('hidden');
         document.getElementById('adminDashboard').classList.remove('hidden');
-        switchAdminWeek('Week 1');
-        switchAdminDay('Mon');
+        
+        // 초기 날짜 설정 (오늘 또는 3월 2일)
+        const today = new Date();
+        const initialDate = (today.getFullYear() === 2026 && today.getMonth() === 2) 
+            ? today.toISOString().split('T')[0] 
+            : '2026-03-02';
+        
+        document.getElementById('adminDateInput').value = initialDate;
+        syncAdminDate();
     } else {
         document.getElementById('adminLoginError').classList.remove('hidden');
+    }
+}
+
+function syncAdminDate() {
+    const dateStr = document.getElementById('adminDateInput').value;
+    if (!dateStr) return;
+
+    adminSelectedDate = dateStr;
+    const { week, day } = getWeekAndDayFromDate(dateStr);
+    adminCurrentWeek = week;
+    adminCurrentDay = day;
+
+    document.getElementById('selectedDateDisplay').innerText = `${dateStr} (Week ${week}, ${day})`;
+    renderAdminList();
+}
+
+async function suggestWordData() {
+    const wordInput = document.getElementById('newWord');
+    const word = wordInput.value.trim();
+    if (!word) {
+        alert("원하는 단어를 먼저 입력해주세요!");
+        return;
+    }
+
+    const btn = event.currentTarget;
+    const originalText = btn.innerHTML;
+    btn.innerHTML = `<i class="fas fa-spinner fa-spin"></i> 생성 중...`;
+    btn.disabled = true;
+
+    try {
+        const response = await fetch(`${API_URL}/suggest-word`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ word })
+        });
+        const data = await response.json();
+
+        if (data.error) throw new Error(data.error);
+
+        document.getElementById('newMeaning').value = data.meaning;
+        document.getElementById('newExample').value = data.example;
+        document.getElementById('newKorEx').value = data.korEx;
+        
+        speak(`Suggestion for ${word} is ready!`, true);
+    } catch (err) {
+        console.error('Error suggesting word:', err);
+        alert('추천 데이터를 가져오지 못했습니다.');
+    } finally {
+        btn.innerHTML = originalText;
+        btn.disabled = false;
     }
 }
 
@@ -259,14 +325,16 @@ function switchAdminDay(day) {
 function renderAdminList() {
     const list = document.getElementById('adminWordList');
     list.innerHTML = '';
-    const currentList = wordData[adminCurrentWeek][adminCurrentDay];
+    
+    // wordData[week][day]에서 가져오기 (필요시 API에서 직접 해당 날짜만 가져오게 고도화 가능)
+    const currentList = (wordData[adminCurrentWeek] && wordData[adminCurrentWeek][adminCurrentDay]) || [];
 
     if (currentList.length === 0) {
         list.innerHTML = '<p class="text-center text-gray-500 mt-4">단어가 없습니다.</p>';
         return;
     }
 
-    currentList.forEach((item, index) => {
+    currentList.forEach((item) => {
         const div = document.createElement('div');
         div.className = 'flex justify-between items-center p-3 border-b mb-2 bg-gray-50 rounded-lg';
         div.innerHTML = `
@@ -274,13 +342,13 @@ function renderAdminList() {
                 <p class="font-bold">${item.word} <span class="text-sm font-normal text-gray-500">(${item.meaning})</span></p>
                 <p class="text-xs text-gray-400 truncate max-w-[200px]">${item.example}</p>
             </div>
-            <button onclick="deleteWord(${index})" class="text-red-500 p-2 hover:bg-red-50 rounded"><i class="fas fa-trash"></i></button>
+            <button onclick="deleteWord(${item.id})" class="text-red-500 p-2 hover:bg-red-50 rounded"><i class="fas fa-trash"></i></button>
         `;
         list.appendChild(div);
     });
 }
 
-function addWord() {
+async function addWord() {
     const word = document.getElementById('newWord').value.trim();
     const meaning = document.getElementById('newMeaning').value.trim();
     const example = document.getElementById('newExample').value.trim() || 'No example';
@@ -291,20 +359,52 @@ function addWord() {
         return;
     }
 
-    wordData[adminCurrentWeek][adminCurrentDay].push({ word, meaning, example, korEx });
+    try {
+        const response = await fetch(`${API_URL}/words`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                week: adminCurrentWeek,
+                day: adminCurrentDay,
+                word,
+                meaning,
+                example,
+                korEx,
+                study_date: adminSelectedDate
+            })
+        });
 
-    document.getElementById('newWord').value = '';
-    document.getElementById('newMeaning').value = '';
-    document.getElementById('newExample').value = '';
-    document.getElementById('newKorEx').value = '';
-
-    renderAdminList();
+        if (response.ok) {
+            await fetchAllWords(); // Sync local data
+            document.getElementById('newWord').value = '';
+            document.getElementById('newMeaning').value = '';
+            document.getElementById('newExample').value = '';
+            document.getElementById('newKorEx').value = '';
+            renderAdminList();
+        } else {
+            alert('단어 추가 실패');
+        }
+    } catch (err) {
+        console.error('Error adding word:', err);
+    }
 }
 
-function deleteWord(index) {
+async function deleteWord(id) {
     if (confirm("정말 삭제하시겠습니까?")) {
-        wordData[adminCurrentWeek][adminCurrentDay].splice(index, 1);
-        renderAdminList();
+        try {
+            const response = await fetch(`${API_URL}/words/${id}`, {
+                method: 'DELETE'
+            });
+
+            if (response.ok) {
+                await fetchAllWords(); // Sync local data
+                renderAdminList();
+            } else {
+                alert('단어 삭제 실패');
+            }
+        } catch (err) {
+            console.error('Error deleting word:', err);
+        }
     }
 }
 
@@ -452,12 +552,7 @@ function renderChoice() {
     let opts = [item.meaning];
 
     // 오답 선택지를 가져오기 위해 모든 단어를 모음
-    const allWords = [];
-    Object.values(wordData).forEach(week => {
-        Object.values(week).forEach(day => {
-            allWords.push(...day);
-        });
-    });
+    const allWords = getAllMonthlyWords();
 
     const others = allWords.map(i => i.meaning).filter(m => m !== item.meaning);
     // 중복 제거 후 섞기
@@ -593,7 +688,7 @@ function checkAnswer(isCorrect) {
         // 월간 테스트거나 리뷰 모드면 틀려도 다음으로 넘어감
         const shouldSkip = isMonthlyQuiz || isReviewMode;
         console.log("checkAnswer - isCorrect:", isCorrect, "isMonthlyQuiz:", isMonthlyQuiz, "isReviewMode:", isReviewMode, "shouldSkip:", shouldSkip);
-        
+
         if (isCorrect || shouldSkip) {
             setTimeout(() => {
                 if (quizState.index < quizState.items.length - 1) {
@@ -623,7 +718,7 @@ function showFeedback(isCorrect) {
     setTimeout(() => fb.classList.add('opacity-0'), 700);
 }
 
-function showResult() {
+async function showResult() {
     document.querySelectorAll('[id^="quizView"]').forEach(el => el.classList.add('hidden'));
     document.getElementById('resultView').classList.remove('hidden');
 
@@ -633,7 +728,25 @@ function showResult() {
     const resultMsg = isMonthlyQuiz
         ? `한 달 동안 배운 단어 중 ${totalQuestions}개를 테스트했어요!`
         : `오늘 공부도 완벽하게 성공!`;
-    
+
+    // 신규: 퀴즈 결과 DB 저장 (리뷰 모드 제외)
+    if (!isReviewMode && userId) {
+        try {
+            await fetch(`${API_URL}/quiz-history`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    user_id: userId,
+                    quiz_type: quizType,
+                    score: finalScore
+                })
+            });
+            console.log('Quiz history saved');
+        } catch (err) {
+            console.error('Error saving quiz history:', err);
+        }
+    }
+
     document.querySelector('#resultView p').innerText = resultMsg;
     document.getElementById('finalScoreDisplay').innerHTML = `
         <div class="bg-blue-50 border-2 border-blue-200 rounded-3xl p-6 mb-8 text-center shadow-inner">
@@ -663,7 +776,7 @@ function startReviewQuiz() {
     quizState.wrongItems = [];
     quizState.index = 0;
     quizState.score = 0;
-    
+
     document.getElementById('resultView').classList.add('hidden');
     if (quizType === 'choice') {
         document.getElementById('quizViewChoice').classList.remove('hidden');
@@ -694,3 +807,4 @@ window.onload = () => {
         }
     });
 };
+console.log('app_v2.js: Loading complete!');

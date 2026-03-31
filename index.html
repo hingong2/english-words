@@ -218,49 +218,35 @@
                     class="fas fa-times text-2xl"></i></button>
         </div>
 
-        <!-- Admin Week Tabs -->
-        <div class="bg-gray-200 px-4 py-2 border-b border-gray-300 shrink-0">
-            <div id="adminWeekTabs" class="flex gap-2 overflow-x-auto pb-1 hide-scrollbar">
-                <button onclick="switchAdminWeek(1)"
-                    class="flex-shrink-0 px-3 py-1.5 rounded-full font-bold text-xs bg-blue-600 text-white border-2 border-blue-600 transition-all">Week
-                    1</button>
-                <button onclick="switchAdminWeek(2)"
-                    class="flex-shrink-0 px-3 py-1.5 rounded-full font-bold text-xs bg-white text-gray-600 border-2 border-gray-300 transition-all hover:bg-gray-50">Week
-                    2</button>
-                <button onclick="switchAdminWeek(3)"
-                    class="flex-shrink-0 px-3 py-1.5 rounded-full font-bold text-xs bg-white text-gray-600 border-2 border-gray-300 transition-all hover:bg-gray-50">Week
-                    3</button>
-                <button onclick="switchAdminWeek(4)"
-                    class="flex-shrink-0 px-3 py-1.5 rounded-full font-bold text-xs bg-white text-gray-600 border-2 border-gray-300 transition-all hover:bg-gray-50">Week
-                    4</button>
+        <!-- Admin Date Picker -->
+        <div class="bg-gray-200 px-4 py-4 border-b border-gray-300 shrink-0">
+            <label class="block text-xs font-bold text-gray-500 mb-1 uppercase tracking-wider">학습 날짜 선택</label>
+            <div class="flex gap-2">
+                <input type="date" id="adminDateInput" onclick="this.showPicker()"
+                    class="flex-1 p-2 rounded-xl border-2 border-gray-300 font-bold text-gray-700 focus:border-gray-800 outline-none">
+                <button onclick="syncAdminDate()" class="bg-gray-800 text-white px-4 rounded-xl font-bold text-sm">이동</button>
             </div>
         </div>
 
-        <!-- Admin Day Tabs -->
-        <div id="adminDayTabs" class="p-4 flex gap-2 bg-gray-100 shrink-0 border-b border-gray-300">
-            <button onclick="switchAdminDay('Mon')" id="adminTabMon"
-                class="flex-1 py-2.5 rounded-xl font-bold bg-gray-800 text-white border border-gray-800 tab-active transition-colors flex flex-col items-center justify-center leading-tight">
-                <span>Mon</span><span id="adminDateMon" class="text-[10px] font-normal opacity-80 mt-0.5">3/2</span>
-            </button>
-            <button onclick="switchAdminDay('Wed')" id="adminTabWed"
-                class="flex-1 py-2.5 rounded-xl font-bold bg-white text-gray-600 border border-gray-300 transition-colors flex flex-col items-center justify-center leading-tight">
-                <span>Wed</span><span id="adminDateWed" class="text-[10px] font-normal opacity-80 mt-0.5">3/4</span>
-            </button>
-            <button onclick="switchAdminDay('Fri')" id="adminTabFri"
-                class="flex-1 py-2.5 rounded-xl font-bold bg-white text-gray-600 border border-gray-300 transition-colors flex flex-col items-center justify-center leading-tight">
-                <span>Fri</span><span id="adminDateFri" class="text-[10px] font-normal opacity-80 mt-0.5">3/6</span>
-            </button>
-        </div>
-
         <div class="p-4 bg-gray-50 border-b shrink-0">
-            <h3 class="font-bold text-gray-700 mb-2">새 단어 추가</h3>
+            <div class="flex justify-between items-center mb-2">
+                <h3 class="font-bold text-gray-700">새 단어 추가</h3>
+                <span id="selectedDateDisplay" class="text-xs font-bold text-blue-500 bg-blue-50 px-2 py-1 rounded-lg"></span>
+            </div>
             <div class="space-y-2">
-                <input type="text" id="newWord" placeholder="단어 (예: apple)" class="w-full p-2 border rounded-lg">
+                <div class="flex gap-2">
+                    <input type="text" id="newWord" placeholder="단어 (예: apple)" class="flex-1 p-2 border rounded-lg">
+                    <button onclick="suggestWordData()" 
+                        class="bg-purple-100 text-purple-600 px-3 rounded-lg font-bold text-sm hover:bg-purple-200 border-2 border-purple-200"
+                        title="AI 자동 완성 (초2 수준)">
+                        ✨ 자동 완성
+                    </button>
+                </div>
                 <input type="text" id="newMeaning" placeholder="뜻 (예: 사과)" class="w-full p-2 border rounded-lg">
-                <input type="text" id="newExample" placeholder="영어 예문" class="w-full p-2 border rounded-lg">
+                <input type="text" id="newExample" placeholder="영어 예문 (초등학교 2학년 수준)" class="w-full p-2 border rounded-lg">
                 <input type="text" id="newKorEx" placeholder="한글 뜻 예문" class="w-full p-2 border rounded-lg">
                 <button onclick="addWord()"
-                    class="w-full bg-blue-500 text-white font-bold py-2 rounded-lg mt-2">추가하기</button>
+                    class="w-full bg-blue-500 text-white font-bold py-2 rounded-lg mt-2 shadow-md hover:bg-blue-600 active:scale-95 transition-all">추가하기</button>
             </div>
         </div>
 
