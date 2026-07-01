@@ -1,17 +1,27 @@
 console.log('app_v2.js: Loading start...');
 const API_URL = 'http://localhost:3005/api';
+
+function getLocalDateString(dateObj) {
+    const year = dateObj.getFullYear();
+    const month = String(dateObj.getMonth() + 1).padStart(2, '0');
+    const day = String(dateObj.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+}
+
 let wordData = {
     1: { Mon: [], Wed: [], Fri: [] },
     2: { Mon: [], Wed: [], Fri: [] },
     3: { Mon: [], Wed: [], Fri: [] },
     4: { Mon: [], Wed: [], Fri: [] }
 };
+let rawWords = [];
 
 async function fetchAllWords() {
     try {
         const response = await fetch(`${API_URL}/words`);
         if (!response.ok) throw new Error('Network response was not ok');
         const data = await response.json();
+        rawWords = data;
         
         // Reset wordData
         wordData = {
@@ -28,7 +38,8 @@ async function fetchAllWords() {
                     word: item.word,
                     meaning: item.meaning,
                     example: item.example,
-                    korEx: item.korEx
+                    korEx: item.korEx,
+                    study_date: item.study_date
                 });
             }
         });
@@ -39,18 +50,55 @@ async function fetchAllWords() {
     }
 }
 
-const dateMapping = {
-    1: { Mon: "3/2", Wed: "3/4", Fri: "3/6" },
-    2: { Mon: "3/9", Wed: "3/11", Fri: "3/13" },
-    3: { Mon: "3/16", Wed: "3/18", Fri: "3/20" },
-    4: { Mon: "3/23", Wed: "3/25", Fri: "3/27" }
-};
+function generateDateMapping(year, month) {
+    const mapping = {
+        1: { Mon: null, Wed: null, Fri: null },
+        2: { Mon: null, Wed: null, Fri: null },
+        3: { Mon: null, Wed: null, Fri: null },
+        4: { Mon: null, Wed: null, Fri: null }
+    };
+
+    function getStartMonday(y, m) {
+        const first = new Date(y, m, 1);
+        const dayOfWeek = first.getDay();
+        if (dayOfWeek === 0) {
+            return new Date(y, m, 2);
+        } else {
+            return new Date(y, m, 1 - (dayOfWeek - 1));
+        }
+    }
+
+    const startMonday = getStartMonday(year, month);
+
+    for (let week = 1; week <= 4; week++) {
+        const monDate = new Date(startMonday.getTime() + (week - 1) * 7 * 24 * 60 * 60 * 1000);
+        const wedDate = new Date(monDate.getTime() + 2 * 24 * 60 * 60 * 1000);
+        const friDate = new Date(monDate.getTime() + 4 * 24 * 60 * 60 * 1000);
+
+        mapping[week].Mon = {
+            label: `${monDate.getMonth() + 1}/${monDate.getDate()}`,
+            dateStr: getLocalDateString(monDate)
+        };
+        mapping[week].Wed = {
+            label: `${wedDate.getMonth() + 1}/${wedDate.getDate()}`,
+            dateStr: getLocalDateString(wedDate)
+        };
+        mapping[week].Fri = {
+            label: `${friDate.getMonth() + 1}/${friDate.getDate()}`,
+            dateStr: getLocalDateString(friDate)
+        };
+    }
+
+    return mapping;
+}
+
+let dateMapping = generateDateMapping(new Date().getFullYear(), new Date().getMonth());
 
 let userName = "나";
 let userId = null; // 신규: DB 유저 ID 저장을 위한 변수
 let currentWeek = 1;
 let currentDay = 'Mon';
-let adminSelectedDate = new Date().toISOString().split('T')[0];
+let adminSelectedDate = getLocalDateString(new Date());
 let adminCurrentWeek = 1;
 let adminCurrentDay = 'Mon';
 let usVoice = null;
@@ -60,13 +108,7 @@ let isReviewMode = false;
 let quizState = { index: 0, score: 0, items: [], selected: null, currentInput: "", wrongItems: [] };
 
 function getAllMonthlyWords() {
-    const allWords = [];
-    Object.values(wordData).forEach(week => {
-        Object.values(week).forEach(dayWords => {
-            allWords.push(...dayWords);
-        });
-    });
-    return allWords;
+    return rawWords;
 }
 
 function startMonthlyQuizMenu() {
@@ -109,26 +151,50 @@ function getWeekAndDayFromDate(dateStr) {
     const dateObj = new Date(dateStr);
     if (isNaN(dateObj.getTime())) return { week: 1, day: 'Mon' };
 
-    const month = dateObj.getMonth();
-    const year = dateObj.getFullYear();
-    const date = dateObj.getDate();
-    const dayOfWeek = dateObj.getDay();
-
-    // 2026년 3월 기준 (시스템 고정 로직 유지)
-    if (year !== 2026 || month !== 2) {
-        return { week: 1, day: 'Mon' };
+    function getStartMonday(y, m) {
+        const first = new Date(y, m, 1);
+        const dayOfWeek = first.getDay();
+        if (dayOfWeek === 0) {
+            return new Date(y, m, 2);
+        } else {
+            return new Date(y, m, 1 - (dayOfWeek - 1));
+        }
     }
 
+    const year = dateObj.getFullYear();
+    const month = dateObj.getMonth();
+
+    // Check if this date belongs to the NEXT month's Week 1
+    const nextMonthDate = new Date(year, month + 1, 1);
+    const nextStartMonday = getStartMonday(nextMonthDate.getFullYear(), nextMonthDate.getMonth());
+    
+    let startMonday;
+    if (dateObj >= nextStartMonday) {
+        startMonday = nextStartMonday;
+    } else {
+        const currStartMonday = getStartMonday(year, month);
+        if (dateObj < currStartMonday) {
+            const prevMonthDate = new Date(year, month - 1, 1);
+            startMonday = getStartMonday(prevMonthDate.getFullYear(), prevMonthDate.getMonth());
+        } else {
+            startMonday = currStartMonday;
+        }
+    }
+
+    const diffTime = dateObj.getTime() - startMonday.getTime();
+    const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+    
     let week = 1;
-    if (date < 9) week = 1;
-    else if (date < 16) week = 2;
-    else if (date < 23) week = 3;
+    if (diffDays < 7) week = 1;
+    else if (diffDays < 14) week = 2;
+    else if (diffDays < 21) week = 3;
     else week = 4;
 
+    const dayOfWeek = dateObj.getDay();
     let day = 'Mon';
     if (dayOfWeek === 1 || dayOfWeek === 2) day = 'Mon';
     else if (dayOfWeek === 3 || dayOfWeek === 4) day = 'Wed';
-    else if (dayOfWeek === 5 || dayOfWeek === 6 || dayOfWeek === 0) day = 'Fri';
+    else day = 'Fri';
 
     return { week, day };
 }
@@ -160,9 +226,13 @@ async function startApp() {
     speak("Welcome, " + userName + "! Let's study English!", true);
 
     // 오늘 날짜에 맞는 주차와 요일 자동 계산 및 탭 적용
-    const todayStr = new Date().toISOString().split('T')[0];
+    const today = new Date();
+    const todayStr = getLocalDateString(today);
     const initDate = getWeekAndDayFromDate(todayStr);
     
+    // 현재 월에 해당하는 dateMapping 생성 및 업데이트
+    dateMapping = generateDateMapping(today.getFullYear(), today.getMonth());
+
     // 초기 데이터 로딩 후 앱 시작
     fetchAllWords().then(() => {
         switchWeek(initDate.week, initDate.day);
@@ -223,11 +293,9 @@ function loginAdmin() {
         document.getElementById('adminLoginScreen').classList.add('hidden');
         document.getElementById('adminDashboard').classList.remove('hidden');
         
-        // 초기 날짜 설정 (오늘 또는 3월 2일)
+        // 초기 날짜 설정 (오늘 날짜)
         const today = new Date();
-        const initialDate = (today.getFullYear() === 2026 && today.getMonth() === 2) 
-            ? today.toISOString().split('T')[0] 
-            : '2026-03-02';
+        const initialDate = getLocalDateString(today);
         
         document.getElementById('adminDateInput').value = initialDate;
         syncAdminDate();
@@ -300,9 +368,9 @@ function switchAdminWeek(week) {
 
     // Update dates for admin day tabs
     if (dateMapping[week]) {
-        document.getElementById('adminDateMon').innerText = dateMapping[week].Mon;
-        document.getElementById('adminDateWed').innerText = dateMapping[week].Wed;
-        document.getElementById('adminDateFri').innerText = dateMapping[week].Fri;
+        document.getElementById('adminDateMon').innerText = dateMapping[week].Mon.label;
+        document.getElementById('adminDateWed').innerText = dateMapping[week].Wed.label;
+        document.getElementById('adminDateFri').innerText = dateMapping[week].Fri.label;
     }
 
     switchAdminDay('Mon');
@@ -326,11 +394,16 @@ function renderAdminList() {
     const list = document.getElementById('adminWordList');
     list.innerHTML = '';
     
-    // wordData[week][day]에서 가져오기 (필요시 API에서 직접 해당 날짜만 가져오게 고도화 가능)
-    const currentList = (wordData[adminCurrentWeek] && wordData[adminCurrentWeek][adminCurrentDay]) || [];
+    // Filter rawWords by the selected date YYYY-MM-DD
+    const currentList = rawWords.filter(item => {
+        if (!item.study_date) return false;
+        const itemDate = item.study_date.split('T')[0].split(' ')[0];
+        const selectedDate = adminSelectedDate.split('T')[0].split(' ')[0];
+        return itemDate === selectedDate;
+    });
 
     if (currentList.length === 0) {
-        list.innerHTML = '<p class="text-center text-gray-500 mt-4">단어가 없습니다.</p>';
+        list.innerHTML = '<p class="text-center text-gray-500 mt-4">이 날짜에 등록된 단어가 없습니다.</p>';
         return;
     }
 
@@ -422,9 +495,9 @@ function switchWeek(week, forceDay = 'Mon') {
 
     // Update dates for main day tabs
     if (dateMapping[week]) {
-        document.getElementById('dateMon').innerText = dateMapping[week].Mon;
-        document.getElementById('dateWed').innerText = dateMapping[week].Wed;
-        document.getElementById('dateFri').innerText = dateMapping[week].Fri;
+        document.getElementById('dateMon').innerText = dateMapping[week].Mon.label;
+        document.getElementById('dateWed').innerText = dateMapping[week].Wed.label;
+        document.getElementById('dateFri').innerText = dateMapping[week].Fri.label;
     }
 
     switchDay(forceDay);
@@ -446,7 +519,11 @@ function switchDay(day) {
     const list = document.getElementById('wordList');
     list.innerHTML = '';
 
-    const currentList = wordData[currentWeek][currentDay];
+    const activeDateStr = dateMapping[currentWeek][currentDay].dateStr;
+    const currentList = rawWords.filter(item => {
+        if (!item.study_date) return false;
+        return item.study_date.split('T')[0].split(' ')[0] === activeDateStr;
+    });
 
     if (currentList.length === 0) {
         list.innerHTML = '<div class="text-center py-10"><p class="text-gray-500 font-bold mb-2">🎉 휴식 시간입니다! 🎉</p><p class="text-sm text-gray-400">오늘은 외워야 할 단어가 없어요.</p></div>';
@@ -482,7 +559,10 @@ function switchDay(day) {
 }
 
 function openQuizMenu() {
-    const currentList = isMonthlyQuiz ? getAllMonthlyWords() : wordData[currentWeek][currentDay];
+    const activeDateStr = dateMapping[currentWeek][currentDay].dateStr;
+    const currentList = isMonthlyQuiz 
+        ? getAllMonthlyWords() 
+        : rawWords.filter(item => item.study_date && item.study_date.split('T')[0].split(' ')[0] === activeDateStr);
     if (currentList.length === 0) {
         alert("게임할 단어가 없어요!");
         return;
@@ -517,7 +597,10 @@ function startQuiz(type) {
     isReviewMode = false;
     document.getElementById('quizMenu').classList.add('hidden');
 
-    let words = isMonthlyQuiz ? getAllMonthlyWords() : [...wordData[currentWeek][currentDay]];
+    const activeDateStr = dateMapping[currentWeek][currentDay].dateStr;
+    let words = isMonthlyQuiz 
+        ? getAllMonthlyWords() 
+        : rawWords.filter(item => item.study_date && item.study_date.split('T')[0].split(' ')[0] === activeDateStr);
 
     // 월간 테스트라면 랜덤하게 20단어만 선택 (너무 많으면 힘드니까요)
     if (isMonthlyQuiz && words.length > 20) {

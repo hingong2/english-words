@@ -6,3 +6,4 @@ debug_env.js
 /tmp/
 .gemini/
 brain/
+*.db
