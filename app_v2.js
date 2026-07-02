@@ -522,10 +522,10 @@ function switchDay(day) {
     const list = document.getElementById('wordList');
     list.innerHTML = '';
 
+    const activeDateStr = dateMapping[currentWeek][currentDay].dateStr;
     const currentList = rawWords.filter(item => {
         if (!item.study_date) return false;
-        const itemDateInfo = getWeekAndDayFromDate(item.study_date);
-        return itemDateInfo.week === currentWeek && itemDateInfo.day === currentDay;
+        return item.study_date.split('T')[0].split(' ')[0] === activeDateStr;
     });
 
     if (currentList.length === 0) {
@@ -562,12 +562,12 @@ function switchDay(day) {
 }
 
 function openQuizMenu() {
+    const activeDateStr = dateMapping[currentWeek][currentDay].dateStr;
     const currentList = isMonthlyQuiz 
         ? getAllMonthlyWords() 
         : rawWords.filter(item => {
             if (!item.study_date) return false;
-            const itemDateInfo = getWeekAndDayFromDate(item.study_date);
-            return itemDateInfo.week === currentWeek && itemDateInfo.day === currentDay;
+            return item.study_date.split('T')[0].split(' ')[0] === activeDateStr;
         });
     if (currentList.length === 0) {
         alert("게임할 단어가 없어요!");
@@ -603,12 +603,12 @@ function startQuiz(type) {
     isReviewMode = false;
     document.getElementById('quizMenu').classList.add('hidden');
 
+    const activeDateStr = dateMapping[currentWeek][currentDay].dateStr;
     let words = isMonthlyQuiz 
         ? getAllMonthlyWords() 
         : rawWords.filter(item => {
             if (!item.study_date) return false;
-            const itemDateInfo = getWeekAndDayFromDate(item.study_date);
-            return itemDateInfo.week === currentWeek && itemDateInfo.day === currentDay;
+            return item.study_date.split('T')[0].split(' ')[0] === activeDateStr;
         });
 
     // 월간 테스트라면 랜덤하게 20단어만 선택 (너무 많으면 힘드니까요)
