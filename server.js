@@ -24,7 +24,7 @@ const pool = mysql.createPool({
 app.get('/api/words', async (req, res) => {
     try {
         const { week, day, date } = req.query;
-        let query = 'SELECT word_id as id, study_date, week_num as week, day_of_week as day, word, meaning, example_en as example, example_ko as korEx FROM vocab_words';
+        let query = "SELECT word_id as id, DATE_FORMAT(study_date, '%Y-%m-%d') as study_date, week_num as week, day_of_week as day, word, meaning, example_en as example, example_ko as korEx FROM vocab_words";
         let params = [];
         let conditions = [];
 
