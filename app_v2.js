@@ -148,7 +148,10 @@ function speak(text, isExciting = false) {
 }
 
 function getWeekAndDayFromDate(dateStr) {
-    const dateObj = new Date(dateStr);
+    if (!dateStr) return { week: 1, day: 'Mon' };
+    const parts = dateStr.split('T')[0].split(' ')[0].split('-');
+    if (parts.length < 3) return { week: 1, day: 'Mon' };
+    const dateObj = new Date(parseInt(parts[0]), parseInt(parts[1]) - 1, parseInt(parts[2]));
     if (isNaN(dateObj.getTime())) return { week: 1, day: 'Mon' };
 
     function getStartMonday(y, m) {
@@ -519,10 +522,10 @@ function switchDay(day) {
     const list = document.getElementById('wordList');
     list.innerHTML = '';
 
-    const activeDateStr = dateMapping[currentWeek][currentDay].dateStr;
     const currentList = rawWords.filter(item => {
         if (!item.study_date) return false;
-        return item.study_date.split('T')[0].split(' ')[0] === activeDateStr;
+        const itemDateInfo = getWeekAndDayFromDate(item.study_date);
+        return itemDateInfo.week === currentWeek && itemDateInfo.day === currentDay;
     });
 
     if (currentList.length === 0) {
@@ -559,10 +562,13 @@ function switchDay(day) {
 }
 
 function openQuizMenu() {
-    const activeDateStr = dateMapping[currentWeek][currentDay].dateStr;
     const currentList = isMonthlyQuiz 
         ? getAllMonthlyWords() 
-        : rawWords.filter(item => item.study_date && item.study_date.split('T')[0].split(' ')[0] === activeDateStr);
+        : rawWords.filter(item => {
+            if (!item.study_date) return false;
+            const itemDateInfo = getWeekAndDayFromDate(item.study_date);
+            return itemDateInfo.week === currentWeek && itemDateInfo.day === currentDay;
+        });
     if (currentList.length === 0) {
         alert("게임할 단어가 없어요!");
         return;
@@ -597,10 +603,13 @@ function startQuiz(type) {
     isReviewMode = false;
     document.getElementById('quizMenu').classList.add('hidden');
 
-    const activeDateStr = dateMapping[currentWeek][currentDay].dateStr;
     let words = isMonthlyQuiz 
         ? getAllMonthlyWords() 
-        : rawWords.filter(item => item.study_date && item.study_date.split('T')[0].split(' ')[0] === activeDateStr);
+        : rawWords.filter(item => {
+            if (!item.study_date) return false;
+            const itemDateInfo = getWeekAndDayFromDate(item.study_date);
+            return itemDateInfo.week === currentWeek && itemDateInfo.day === currentDay;
+        });
 
     // 월간 테스트라면 랜덤하게 20단어만 선택 (너무 많으면 힘드니까요)
     if (isMonthlyQuiz && words.length > 20) {
