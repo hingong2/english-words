@@ -4,7 +4,8 @@
   "description": "English word learning application",
   "main": "index.html",
   "scripts": {
-    "dev": "npx http-server ./ -p 8080"
+    "dev": "npx http-server ./ -p 8080",
+    "build": "echo \"No build step required\""
   },
   "keywords": [],
   "author": "",
