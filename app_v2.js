@@ -371,28 +371,49 @@ function startMonthlyQuizMenu() {
 }
 
 function initVoices() {
+    if (!window.speechSynthesis) return;
     const voices = window.speechSynthesis.getVoices();
-    usVoice = voices.find(v => v.lang === 'en-US' && v.name.includes('Natural')) ||
-        voices.find(v => v.lang === 'en-US' && v.name.includes('Google')) ||
-        voices.find(v => v.lang === 'en-US') ||
-        voices[0];
+    if (voices.length > 0) {
+        usVoice = voices.find(v => v.lang === 'en-US' && v.name.includes('Natural')) ||
+            voices.find(v => v.lang === 'en-US' && v.name.includes('Google')) ||
+            voices.find(v => v.lang === 'en-US') ||
+            voices[0];
+    }
 }
-window.speechSynthesis.onvoiceschanged = initVoices;
+if (window.speechSynthesis) {
+    window.speechSynthesis.onvoiceschanged = initVoices;
+    initVoices();
+}
 
 function speak(text, isExciting = false) {
     if (!window.speechSynthesis) return;
-    window.speechSynthesis.cancel();
+    
+    if (window.speechSynthesis.speaking) {
+        window.speechSynthesis.cancel();
+    }
+    
     const utterance = new SpeechSynthesisUtterance(text);
-    if (usVoice) utterance.voice = usVoice;
     utterance.lang = 'en-US';
 
-    if (isExciting) {
-        utterance.pitch = 1.4;
-        utterance.rate = 1.05;
-    } else {
-        utterance.pitch = 1.15;
-        utterance.rate = 0.8;
+    if (!usVoice) {
+        initVoices();
     }
+    if (usVoice) {
+        try {
+            utterance.voice = usVoice;
+        } catch (e) {
+            console.warn('Failed to set custom voice:', e);
+        }
+    }
+
+    if (isExciting) {
+        utterance.pitch = 1.3;
+        utterance.rate = 1.0;
+    } else {
+        utterance.pitch = 1.0;
+        utterance.rate = 0.85;
+    }
+    
     window.speechSynthesis.speak(utterance);
 }
 
