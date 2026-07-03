@@ -19,37 +19,74 @@ let wordData = {
 let rawWords = [];
 
 async function fetchAllWords() {
+    const hardcoded = [
+        {
+            id: 99991,
+            study_date: '2026-06-29',
+            week: 1,
+            day: 'Mon',
+            word: 'swim tube',
+            meaning: '튜브',
+            example: 'I float on my blue swim tube.',
+            korEx: '나는 파란 튜브를 타고 물에 둥둥 떠 있어요.'
+        },
+        {
+            id: 99992,
+            study_date: '2026-06-29',
+            week: 1,
+            day: 'Mon',
+            word: 'water gun',
+            meaning: '물총',
+            example: 'We play with a water gun in the yard.',
+            korEx: '우리는 마당에서 물총을 가지고 놀아요.'
+        },
+        {
+            id: 99993,
+            study_date: '2026-06-29',
+            week: 1,
+            day: 'Mon',
+            word: 'boat',
+            meaning: '보트',
+            example: 'The little boat moves on the river.',
+            korEx: '작은 배가 강 위를 움직여요.'
+        }
+    ];
+
     try {
         const response = await fetch(`${API_URL}/words`);
         if (!response.ok) throw new Error('Network response was not ok');
         const data = await response.json();
-        rawWords = data;
         
-        // Reset wordData
-        wordData = {
-            1: { Mon: [], Wed: [], Fri: [] },
-            2: { Mon: [], Wed: [], Fri: [] },
-            3: { Mon: [], Wed: [], Fri: [] },
-            4: { Mon: [], Wed: [], Fri: [] }
-        };
-        
-        data.forEach(item => {
-            if (wordData[item.week] && wordData[item.week][item.day]) {
-                wordData[item.week][item.day].push({
-                    id: item.id,
-                    word: item.word,
-                    meaning: item.meaning,
-                    example: item.example,
-                    korEx: item.korEx,
-                    study_date: item.study_date
-                });
-            }
-        });
+        const fetchedIds = new Set(data.map(item => item.word?.toLowerCase()));
+        const uniqueHardcoded = hardcoded.filter(item => !fetchedIds.has(item.word?.toLowerCase()));
+        rawWords = [...uniqueHardcoded, ...data];
         
         console.log('Data synced from DB');
     } catch (err) {
-        console.error('Error fetching words:', err);
+        console.error('Error fetching words, using hardcoded fallback:', err);
+        rawWords = hardcoded;
     }
+
+    // Reset wordData
+    wordData = {
+        1: { Mon: [], Wed: [], Fri: [] },
+        2: { Mon: [], Wed: [], Fri: [] },
+        3: { Mon: [], Wed: [], Fri: [] },
+        4: { Mon: [], Wed: [], Fri: [] }
+    };
+    
+    rawWords.forEach(item => {
+        if (wordData[item.week] && wordData[item.week][item.day]) {
+            wordData[item.week][item.day].push({
+                id: item.id,
+                word: item.word,
+                meaning: item.meaning,
+                example: item.example,
+                korEx: item.korEx,
+                study_date: item.study_date
+            });
+        }
+    });
 }
 
 function generateDateMapping(year, month) {
