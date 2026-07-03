@@ -10,7 +10,8 @@ function getPool(env) {
             database: env.DB_NAME,
             waitForConnections: true,
             connectionLimit: 5,
-            queueLimit: 0
+            queueLimit: 0,
+            disableEval: true
         });
     }
     return pool;
