@@ -1,0 +1,4 @@
+#:schema node_modules/wrangler/config-schema.json
+name = "english-words-dkz"
+compatibility_date = "2024-04-01"
+compatibility_flags = [ "nodejs_compat" ]

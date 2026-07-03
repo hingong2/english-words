@@ -1,5 +1,7 @@
 console.log('app_v2.js: Loading start...');
-const API_URL = 'http://localhost:3005/api';
+const API_URL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+    ? 'http://localhost:3005/api'
+    : '/api';
 
 function getLocalDateString(dateObj) {
     const year = dateObj.getFullYear();
