@@ -76,9 +76,9 @@ async function fetchAllWords() {
             week: 1,
             day: 'Wed',
             word: 'sand bucket',
-            meaning: '모래 양동이',
+            meaning: '모래 바구니',
             example: 'I filled my sand bucket with soft sand.',
-            korEx: '나는 내 모래 양동이에 부드러운 모래를 채웠어요.'
+            korEx: '나는 내 모래 바구니에 부드러운 모래를 채웠어요.'
         },
         {
             id: 99997,
@@ -266,11 +266,11 @@ async function fetchAllWords() {
         const response = await fetch(`${API_URL}/words`);
         if (!response.ok) throw new Error('Network response was not ok');
         const data = await response.json();
-        
+
         const fetchedIds = new Set(data.map(item => item.word?.toLowerCase()));
         const uniqueHardcoded = hardcoded.filter(item => !fetchedIds.has(item.word?.toLowerCase()));
         rawWords = [...uniqueHardcoded, ...data];
-        
+
         console.log('Data synced from DB');
     } catch (err) {
         console.error('Error fetching words, using hardcoded fallback:', err);
@@ -284,7 +284,7 @@ async function fetchAllWords() {
         3: { Mon: [], Wed: [], Fri: [] },
         4: { Mon: [], Wed: [], Fri: [] }
     };
-    
+
     rawWords.forEach(item => {
         if (wordData[item.week] && wordData[item.week][item.day]) {
             wordData[item.week][item.day].push({
@@ -419,7 +419,7 @@ function getWeekAndDayFromDate(dateStr) {
     // Check if this date belongs to the NEXT month's Week 1
     const nextMonthDate = new Date(year, month + 1, 1);
     const nextStartMonday = getStartMonday(nextMonthDate.getFullYear(), nextMonthDate.getMonth());
-    
+
     let startMonday;
     if (dateObj >= nextStartMonday) {
         startMonday = nextStartMonday;
@@ -435,7 +435,7 @@ function getWeekAndDayFromDate(dateStr) {
 
     const diffTime = dateObj.getTime() - startMonday.getTime();
     const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
-    
+
     let week = 1;
     if (diffDays < 7) week = 1;
     else if (diffDays < 14) week = 2;
@@ -481,7 +481,7 @@ async function startApp() {
     const today = new Date();
     const todayStr = getLocalDateString(today);
     const initDate = getWeekAndDayFromDate(todayStr);
-    
+
     // 현재 월에 해당하는 dateMapping 생성 및 업데이트
     dateMapping = generateDateMapping(today.getFullYear(), today.getMonth());
 
@@ -544,11 +544,11 @@ function loginAdmin() {
     if (pwd === "2222") {
         document.getElementById('adminLoginScreen').classList.add('hidden');
         document.getElementById('adminDashboard').classList.remove('hidden');
-        
+
         // 초기 날짜 설정 (오늘 날짜)
         const today = new Date();
         const initialDate = getLocalDateString(today);
-        
+
         document.getElementById('adminDateInput').value = initialDate;
         syncAdminDate();
     } else {
@@ -595,7 +595,7 @@ async function suggestWordData() {
         document.getElementById('newMeaning').value = data.meaning;
         document.getElementById('newExample').value = data.example;
         document.getElementById('newKorEx').value = data.korEx;
-        
+
         speak(`Suggestion for ${word} is ready!`, true);
     } catch (err) {
         console.error('Error suggesting word:', err);
@@ -645,7 +645,7 @@ function switchAdminDay(day) {
 function renderAdminList() {
     const list = document.getElementById('adminWordList');
     list.innerHTML = '';
-    
+
     // Filter rawWords by the selected date YYYY-MM-DD
     const currentList = rawWords.filter(item => {
         if (!item.study_date) return false;
@@ -812,8 +812,8 @@ function switchDay(day) {
 
 function openQuizMenu() {
     const activeDateStr = dateMapping[currentWeek][currentDay].dateStr;
-    const currentList = isMonthlyQuiz 
-        ? getAllMonthlyWords() 
+    const currentList = isMonthlyQuiz
+        ? getAllMonthlyWords()
         : rawWords.filter(item => {
             if (!item.study_date) return false;
             return item.study_date.split('T')[0].split(' ')[0] === activeDateStr;
@@ -853,8 +853,8 @@ function startQuiz(type) {
     document.getElementById('quizMenu').classList.add('hidden');
 
     const activeDateStr = dateMapping[currentWeek][currentDay].dateStr;
-    let words = isMonthlyQuiz 
-        ? getAllMonthlyWords() 
+    let words = isMonthlyQuiz
+        ? getAllMonthlyWords()
         : rawWords.filter(item => {
             if (!item.study_date) return false;
             return item.study_date.split('T')[0].split(' ')[0] === activeDateStr;
