@@ -111,244 +111,774 @@ function getActiveCycle(cycles, todayStr) {
 async function fetchAllWords() {
     const hardcoded = [
         {
-            id: 99991,
+            id: 1,
+            study_date: '2026-03-04',
+            week: 1,
+            day: 'Wed',
+            word: "balloon",
+            meaning: "풍선",
+            example: "I have a big balloon.",
+            korEx: "나는 큰 풍선이 있어요."
+        },
+        {
+            id: 2,
+            study_date: '2026-03-04',
+            week: 1,
+            day: 'Wed',
+            word: "bike",
+            meaning: "자전거",
+            example: "I ride my bike.",
+            korEx: "나는 자전거를 타요."
+        },
+        {
+            id: 3,
+            study_date: '2026-03-04',
+            week: 1,
+            day: 'Wed',
+            word: "doll",
+            meaning: "인형",
+            example: "The doll is cute.",
+            korEx: "그 인형은 귀여워요."
+        },
+        {
+            id: 4,
+            study_date: '2026-03-06',
+            week: 1,
+            day: 'Fri',
+            word: "train",
+            meaning: "기차",
+            example: "The train is long.",
+            korEx: "기차는 길어요."
+        },
+        {
+            id: 5,
+            study_date: '2026-03-06',
+            week: 1,
+            day: 'Fri',
+            word: "robot",
+            meaning: "로봇",
+            example: "Look at my robot.",
+            korEx: "내 로봇을 보세요."
+        },
+        {
+            id: 6,
+            study_date: '2026-03-06',
+            week: 1,
+            day: 'Fri',
+            word: "teddy-bear",
+            meaning: "곰인형",
+            example: "I love my teddy-bear.",
+            korEx: "나는 내 곰인형을 사랑해요."
+        },
+        {
+            id: 7,
+            study_date: '2026-03-09',
+            week: 2,
+            day: 'Mon',
+            word: "orange",
+            meaning: "주황색",
+            example: "The ball is orange.",
+            korEx: "공은 주황색이에요."
+        },
+        {
+            id: 8,
+            study_date: '2026-03-09',
+            week: 2,
+            day: 'Mon',
+            word: "pink",
+            meaning: "분홍색",
+            example: "I like pink flowers.",
+            korEx: "나는 분홍색 꽃을 좋아해요."
+        },
+        {
+            id: 9,
+            study_date: '2026-03-09',
+            week: 2,
+            day: 'Mon',
+            word: "brown",
+            meaning: "갈색",
+            example: "The bear is brown.",
+            korEx: "그 곰은 갈색이에요."
+        },
+        {
+            id: 10,
+            study_date: '2026-03-11',
+            week: 2,
+            day: 'Wed',
+            word: "black",
+            meaning: "검은색",
+            example: "I have a black hat.",
+            korEx: "나는 검은 모자가 있어요."
+        },
+        {
+            id: 11,
+            study_date: '2026-03-11',
+            week: 2,
+            day: 'Wed',
+            word: "white",
+            meaning: "하얀색",
+            example: "The milk is white.",
+            korEx: "우유는 하얀색이에요."
+        },
+        {
+            id: 12,
+            study_date: '2026-03-11',
+            week: 2,
+            day: 'Wed',
+            word: "purple",
+            meaning: "보라색",
+            example: "I like purple grapes.",
+            korEx: "나는 보라색 포도를 좋아해요."
+        },
+        {
+            id: 13,
+            study_date: '2026-03-13',
+            week: 2,
+            day: 'Fri',
+            word: "pencil",
+            meaning: "연필",
+            example: "I write with my pencil.",
+            korEx: "나는 연필로 글을 써요."
+        },
+        {
+            id: 14,
+            study_date: '2026-03-13',
+            week: 2,
+            day: 'Fri',
+            word: "crayon",
+            meaning: "크레파스",
+            example: "Color with your crayon.",
+            korEx: "크레파스로 색칠하세요."
+        },
+        {
+            id: 15,
+            study_date: '2026-03-16',
+            week: 3,
+            day: 'Mon',
+            word: "eraser",
+            meaning: "지우개",
+            example: "I have an eraser.",
+            korEx: "나는 지우개가 있어요."
+        },
+        {
+            id: 16,
+            study_date: '2026-03-16',
+            week: 3,
+            day: 'Mon',
+            word: "ruler",
+            meaning: "자",
+            example: "This is a long ruler.",
+            korEx: "이것은 긴 자예요."
+        },
+        {
+            id: 17,
+            study_date: '2026-03-18',
+            week: 3,
+            day: 'Wed',
+            word: "pencil-case",
+            meaning: "필통",
+            example: "Put it in the pencil-case.",
+            korEx: "그것을 필통에 넣으세요."
+        },
+        {
+            id: 18,
+            study_date: '2026-03-18',
+            week: 3,
+            day: 'Wed',
+            word: "notebook",
+            meaning: "공책",
+            example: "Write on the notebook.",
+            korEx: "공책에 쓰세요."
+        },
+        {
+            id: 19,
+            study_date: '2026-03-20',
+            week: 3,
+            day: 'Fri',
+            word: "desk",
+            meaning: "책상",
+            example: "The book is on the desk.",
+            korEx: "책이 책상 위에 있어요."
+        },
+        {
+            id: 20,
+            study_date: '2026-03-20',
+            week: 3,
+            day: 'Fri',
+            word: "chair",
+            meaning: "의자",
+            example: "Sit on the chair.",
+            korEx: "의자에 앉으세요."
+        },
+        {
+            id: 21,
+            study_date: '2026-03-23',
+            week: 4,
+            day: 'Mon',
+            word: "whiteboard",
+            meaning: "화이트보드",
+            example: "Look at the whiteboard.",
+            korEx: "화이트보드를 보세요."
+        },
+        {
+            id: 22,
+            study_date: '2026-03-23',
+            week: 4,
+            day: 'Mon',
+            word: "computer",
+            meaning: "컴퓨터",
+            example: "Use the computer.",
+            korEx: "컴퓨터를 사용하세요."
+        },
+        {
+            id: 23,
+            study_date: '2026-03-25',
+            week: 4,
+            day: 'Wed',
+            word: "backpack",
+            meaning: "배낭",
+            example: "My backpack is heavy.",
+            korEx: "내 배낭은 무거워요."
+        },
+        {
+            id: 24,
+            study_date: '2026-03-25',
+            week: 4,
+            day: 'Wed',
+            word: "map",
+            meaning: "지도",
+            example: "Look at the map.",
+            korEx: "지도를 보세요."
+        },
+        {
+            id: 28,
+            study_date: '2026-03-30',
+            week: 4,
+            day: 'Mon',
+            word: "apple",
+            meaning: "사과",
+            example: "I like to eat a red apple.",
+            korEx: "나는 빨간 사과를 먹는 것을 좋아해요."
+        },
+        {
+            id: 29,
+            study_date: '2026-03-30',
+            week: 4,
+            day: 'Mon',
+            word: "orange",
+            meaning: "오렌지",
+            example: "This is a orange.",
+            korEx: "이것은 orange입니다."
+        },
+        {
+            id: 30,
+            study_date: '2026-03-30',
+            week: 4,
+            day: 'Mon',
+            word: "banana",
+            meaning: "바나나",
+            example: "The monkey is eating a banana.",
+            korEx: "원숭이가 바나나를 먹고 있어요."
+        },
+        {
+            id: 32,
             study_date: '2026-06-29',
             week: 1,
             day: 'Mon',
-            word: 'swim tube',
-            meaning: '튜브',
-            example: 'I float on my blue swim tube.',
-            korEx: '나는 파란 튜브를 타고 물에 둥둥 떠 있어요.'
+            word: "swim tube",
+            meaning: "튜브",
+            example: "I float on my blue swim tube.",
+            korEx: "나는 내 파란색 튜브를 타고 물에 둥둥 떠 있어요."
         },
         {
-            id: 99992,
+            id: 41,
             study_date: '2026-06-29',
             week: 1,
             day: 'Mon',
-            word: 'water gun',
-            meaning: '물총',
-            example: 'We play with a water gun in the yard.',
-            korEx: '우리는 마당에서 물총을 가지고 놀아요.'
+            word: "water gun",
+            meaning: "물총",
+            example: "We play with a water gun in the yard.",
+            korEx: "우리는 마당에서 물총을 가지고 놀아요."
         },
         {
-            id: 99993,
+            id: 42,
             study_date: '2026-06-29',
             week: 1,
             day: 'Mon',
-            word: 'boat',
-            meaning: '보트',
-            example: 'The little boat moves on the river.',
-            korEx: '작은 배가 강 위를 움직여요.'
+            word: "boat",
+            meaning: "배",
+            example: "The little boat moves on the river.",
+            korEx: "작은 배가 강 위로 움직여요."
         },
         {
-            id: 99994,
+            id: 34,
             study_date: '2026-07-01',
             week: 1,
             day: 'Wed',
-            word: 'beach ball',
-            meaning: '비치볼',
-            example: 'Catch this big beach ball!',
-            korEx: '이 큰 비치볼을 받아봐!'
+            word: "beach ball",
+            meaning: "비치볼",
+            example: "Catch this big beach ball!",
+            korEx: "이 큰 비치볼을 받아봐!"
         },
         {
-            id: 99995,
+            id: 43,
             study_date: '2026-07-01',
             week: 1,
             day: 'Wed',
-            word: 'life vest',
-            meaning: '구명조끼',
-            example: 'Always wear a life vest in the pool.',
-            korEx: '풀장에서는 항상 구명조끼를 입으세요.'
+            word: "life vest",
+            meaning: "구명조끼",
+            example: "Always wear a life vest in the pool.",
+            korEx: "수영장에서는 항상 구명조끼를 입으세요."
         },
         {
-            id: 99996,
+            id: 44,
             study_date: '2026-07-01',
             week: 1,
             day: 'Wed',
-            word: 'sand bucket',
-            meaning: '모래 바구니',
-            example: 'I filled my sand bucket with soft sand.',
-            korEx: '나는 내 모래 바구니에 부드러운 모래를 채웠어요.'
+            word: "sand bucket",
+            meaning: "모래 바구니",
+            example: "I filled my sand bucket with soft sand.",
+            korEx: "나는 모래 바구니에 부드러운 모래를 가득 채웠어요."
         },
         {
-            id: 99997,
+            id: 35,
+            study_date: '2026-07-02',
+            week: 1,
+            day: 'Wed',
+            word: "testword",
+            meaning: "testmeaning",
+            example: "No example",
+            korEx: "예문 없음"
+        },
+        {
+            id: 36,
+            study_date: '2026-07-02',
+            week: 1,
+            day: 'Wed',
+            word: "testword2",
+            meaning: "testmeaning2",
+            example: "No example",
+            korEx: "예문 없음"
+        },
+        {
+            id: 45,
             study_date: '2026-07-03',
             week: 1,
             day: 'Fri',
-            word: 'glove',
-            meaning: '글러브 / 야구장갑',
-            example: 'Put on your baseball glove.',
-            korEx: '야구 글러브를 끼세요.'
+            word: "glove",
+            meaning: "글러브 / 장갑",
+            example: "Put on your baseball glove.",
+            korEx: "야구 글러브를 끼렴."
         },
         {
-            id: 99998,
+            id: 46,
             study_date: '2026-07-03',
             week: 1,
             day: 'Fri',
-            word: 'bat',
-            meaning: '야구 배트',
-            example: 'He swings the bat very fast.',
-            korEx: '그는 배트를 아주 빠르게 휘둘러요.'
+            word: "bat",
+            meaning: "방망이",
+            example: "He swings the bat very fast.",
+            korEx: "그는 방망이를 아주 빠르게 휘둘러요."
         },
         {
-            id: 99999,
+            id: 47,
             study_date: '2026-07-03',
             week: 1,
             day: 'Fri',
-            word: 'soccer ball',
-            meaning: '축구공',
-            example: 'We kick the soccer ball together.',
-            korEx: '우리는 축구공을 함께 차요.'
+            word: "soccer ball",
+            meaning: "축구공",
+            example: "We kick the soccer ball together.",
+            korEx: "우리는 함께 축구공을 차요."
         },
         {
-            id: 100000,
+            id: 48,
             study_date: '2026-07-06',
             week: 2,
             day: 'Mon',
-            word: 'skateboard',
-            meaning: '스케이트보드',
-            example: 'She can ride a skateboard well.',
-            korEx: '그녀는 스케이트보드를 잘 탈 수 있어요.'
+            word: "skateboard",
+            meaning: "스케이트보드",
+            example: "She can ride a skateboard well.",
+            korEx: "그녀는 스케이트보드를 잘 탈 수 있어요"
         },
         {
-            id: 100001,
+            id: 49,
             study_date: '2026-07-06',
             week: 2,
             day: 'Mon',
-            word: 'scooter',
-            meaning: '씽씽이/스쿠터',
-            example: 'I ride my scooter to the park.',
-            korEx: '나는 공원까지 씽씽이를 타요.'
+            word: "scooter",
+            meaning: "씽씽이 / 킥보드",
+            example: "I ride my scooter to the park.",
+            korEx: "나는 공원까지 킥보드를 타고 가요."
         },
         {
-            id: 100002,
+            id: 50,
             study_date: '2026-07-06',
             week: 2,
             day: 'Mon',
-            word: 'yo-yo',
-            meaning: '요요',
-            example: 'The red yo-yo goes up and down.',
-            korEx: '빨간 요요가 위아래로 움직여요.'
+            word: "yo-yo",
+            meaning: "요요",
+            example: "The red yo-yo goes up and down.",
+            korEx: "빨간 요요가 위아래로 움직여요."
         },
         {
-            id: 100003,
+            id: 51,
             study_date: '2026-07-08',
             week: 2,
             day: 'Wed',
-            word: 'marker',
-            meaning: '마커/사인펜',
-            example: 'Draw a line with a green marker.',
-            korEx: '초록색 사인펜으로 선을 그리세요.'
+            word: "marker",
+            meaning: "사인펜",
+            example: "Draw a line with a green marker.",
+            korEx: "초록색 사인펜으로 선을 그리세요."
         },
         {
-            id: 100004,
+            id: 52,
             study_date: '2026-07-08',
             week: 2,
             day: 'Wed',
-            word: 'stapler',
-            meaning: '스테이플러',
-            example: 'May I borrow your stapler?',
-            korEx: '스테이플러 좀 빌릴 수 있을까요?'
+            word: "stapler",
+            meaning: "호치키스 / 스테이플러",
+            example: "May I borrow your stapler?",
+            korEx: "네 스테이플러 좀 빌릴 수 있을까?"
         },
         {
-            id: 100005,
+            id: 53,
             study_date: '2026-07-10',
             week: 2,
             day: 'Fri',
-            word: 'paintbrush',
-            meaning: '붓 / 미술용 붓',
-            example: 'Dip the paintbrush in the water.',
-            korEx: '붓을 물에 적셔요.'
+            word: "paintbrush",
+            meaning: "붓 / 미술용 붓",
+            example: "Dip the paintbrush in the water.",
+            korEx: "미술용 붓을 물에 담그세요."
         },
         {
-            id: 100006,
+            id: 54,
             study_date: '2026-07-10',
             week: 2,
             day: 'Fri',
-            word: 'glue stick',
-            meaning: '딱풀',
-            example: 'Use a glue stick to paste the paper.',
-            korEx: '종이를 붙이기 위해 딱풀을 사용해요.'
+            word: "glue stick",
+            meaning: "딱풀",
+            example: "Use a glue stick to paste the paper.",
+            korEx: "종이를 붙이기 위해 딱풀을 사용하렴."
         },
         {
-            id: 100007,
+            id: 55,
             study_date: '2026-07-13',
             week: 3,
             day: 'Mon',
-            word: 'colored pencil',
-            meaning: '색연필',
-            example: 'Can I use your red colored pencil?',
-            korEx: '너의 빨간색 색연필을 써도 되니?'
+            word: "colored pencil",
+            meaning: "색연필",
+            example: "Can I use your red colored pencil?",
+            korEx: "네 빨간색 색연필을 써도 되니?"
         },
         {
-            id: 100008,
+            id: 56,
             study_date: '2026-07-13',
             week: 3,
             day: 'Mon',
-            word: 'pencil sharpener',
-            meaning: '연필깎이',
-            example: 'Put the dull pencil in the pencil sharpener.',
-            korEx: '무딘 연필을 연필깎이에 넣으세요.'
+            word: "pencil sharpener",
+            meaning: "연필깎이",
+            example: "Put the dull pencil in the pencil sharpener.",
+            korEx: "뭉툭한 연필을 연필깎이에 넣으렴."
         },
         {
-            id: 100009,
+            id: 57,
             study_date: '2026-07-15',
             week: 3,
             day: 'Wed',
-            word: 'pizza',
-            meaning: '피자',
+            word: "pizza",
+            meaning: "피자",
             example: "Let's eat a warm pizza tonight.",
-            korEx: '오늘 밤에 따뜻한 피자를 먹자.'
+            korEx: "오늘 밤에 따뜻한 피자를 먹자."
         },
         {
-            id: 100010,
+            id: 58,
             study_date: '2026-07-15',
             week: 3,
             day: 'Wed',
-            word: 'fish',
-            meaning: '생선 / 물고기',
-            example: 'My mom cooks fish for dinner.',
-            korEx: '우리 엄마는 저녁 식사로 생선 요리를 하세요.'
+            word: "fish",
+            meaning: "생선 / 물고기",
+            example: "My mom cooks fish for dinner.",
+            korEx: "우리 엄마는 저녁으로 생선을 요리해 주셔요."
         },
         {
-            id: 100011,
+            id: 59,
             study_date: '2026-07-20',
             week: 4,
             day: 'Mon',
-            word: 'chicken',
-            meaning: '치킨 / 닭고기',
-            example: 'I like crispy fried chicken.',
-            korEx: '나는 바삭한 후라이드 치킨을 좋아해요.'
+            word: "chicken",
+            meaning: "닭고기",
+            example: "I like crispy fried chicken.",
+            korEx: "나는 바삭한 프라이드치킨을 좋아해요."
         },
         {
-            id: 100012,
+            id: 60,
             study_date: '2026-07-20',
             week: 4,
             day: 'Mon',
-            word: 'steak',
-            meaning: '스테이크',
-            example: 'The steak is very soft and yummy.',
-            korEx: '이 스테이크는 아주 부드럽고 맛있어요.'
+            word: "steak",
+            meaning: "스테이크",
+            example: "The steak is very soft and yummy.",
+            korEx: "그 스테이크는 아주 부드럽고 맛있어요."
         },
         {
-            id: 100013,
+            id: 61,
             study_date: '2026-07-22',
             week: 4,
             day: 'Wed',
-            word: 'soup',
-            meaning: '수프 / 국',
-            example: 'This potato soup warms my body.',
-            korEx: '이 감자 수프는 내 몸을 따뜻하게 해 주네요.'
+            word: "soup",
+            meaning: "수프/ 국",
+            example: "This potato soup warms my body.",
+            korEx: "이 감자 수프는 내 몸을 따뜻하게 해 주네요."
         },
         {
-            id: 100014,
+            id: 62,
             study_date: '2026-07-22',
             week: 4,
             day: 'Wed',
-            word: 'juice',
-            meaning: '주스',
-            example: 'I want a glass of orange juice.',
-            korEx: '나는 오렌지 주스 한 잔을 원해요.'
+            word: "juice",
+            meaning: "주스",
+            example: "I want a glass of orange juice.",
+            korEx: "나는 오렌지 주스 한 잔을 원해요."
+        },
+        {
+            id: 63,
+            study_date: '2026-07-27',
+            week: 1,
+            day: 'Mon',
+            word: "duck",
+            meaning: "오리",
+            example: "The duck is swimming in the pond.",
+            korEx: "오리가 못에서 수영하고 있어요."
+        },
+        {
+            id: 64,
+            study_date: '2026-07-27',
+            week: 1,
+            day: 'Mon',
+            word: "horse",
+            meaning: "말",
+            example: "He rides a brown horse.",
+            korEx: "그는 갈색 말을 타요."
+        },
+        {
+            id: 65,
+            study_date: '2026-07-27',
+            week: 1,
+            day: 'Mon',
+            word: "turkey",
+            meaning: "칠면조",
+            example: "Look at the big turkey.",
+            korEx: "저 큰 칠면조를 보세요."
+        },
+        {
+            id: 66,
+            study_date: '2026-07-29',
+            week: 1,
+            day: 'Wed',
+            word: "cow",
+            meaning: "소",
+            example: "The cow gives us fresh milk.",
+            korEx: "소는 우리에게 신선한 우유를 줘요."
+        },
+        {
+            id: 67,
+            study_date: '2026-07-29',
+            week: 1,
+            day: 'Wed',
+            word: "goat",
+            meaning: "염소",
+            example: "The goat is eating green grass.",
+            korEx: "염소가 푸른 풀을 먹고 있어요."
+        },
+        {
+            id: 68,
+            study_date: '2026-07-29',
+            week: 1,
+            day: 'Wed',
+            word: "rabbit",
+            meaning: "토끼",
+            example: "The rabbit hops very fast.",
+            korEx: "토끼가 아주 빠르게 깡충깡충 뛰어갑니다."
+        },
+        {
+            id: 69,
+            study_date: '2026-07-31',
+            week: 1,
+            day: 'Fri',
+            word: "skunk",
+            meaning: "스컹크",
+            example: "The skunk has a black and white tail.",
+            korEx: "스컹크는 검은색과 흰색 꼬리를 가지고 있어요."
+        },
+        {
+            id: 70,
+            study_date: '2026-07-31',
+            week: 1,
+            day: 'Fri',
+            word: "cheetah",
+            meaning: "치타",
+            example: "A cheetah runs extremely fast.",
+            korEx: "치타는 매우 빠르게 달려요."
+        },
+        {
+            id: 71,
+            study_date: '2026-07-31',
+            week: 1,
+            day: 'Fri',
+            word: "snake",
+            meaning: "뱀",
+            example: "The green snake is on the tree.",
+            korEx: "초록색 뱀이 나무 위에 있어요."
+        },
+        {
+            id: 72,
+            study_date: '2026-08-10',
+            week: 2,
+            day: 'Mon',
+            word: "owl",
+            meaning: "부엉이 / 올빼미",
+            example: "The owl flies at night.",
+            korEx: "부엉이는 밤에 날아다녀요."
+        },
+        {
+            id: 73,
+            study_date: '2026-08-10',
+            week: 2,
+            day: 'Mon',
+            word: "peacock",
+            meaning: "공작",
+            example: "The peacock opens its beautiful feathers.",
+            korEx: "공작이 아름다운 깃털을 펴요."
+        },
+        {
+            id: 74,
+            study_date: '2026-08-10',
+            week: 2,
+            day: 'Mon',
+            word: "fox",
+            meaning: "여우",
+            example: "The clever fox is hiding in the bushes.",
+            korEx: "똑똑한 여우가 덤불 속에 숨어 있어요."
+        },
+        {
+            id: 75,
+            study_date: '2026-08-12',
+            week: 2,
+            day: 'Wed',
+            word: "doctor",
+            meaning: "의사",
+            example: "The doctor helps sick people.",
+            korEx: "의사 선생님은 아픈 사람들을 도와줘요."
+        },
+        {
+            id: 76,
+            study_date: '2026-08-12',
+            week: 2,
+            day: 'Wed',
+            word: "cook",
+            meaning: "요리사",
+            example: "The cook is making delicious pasta.",
+            korEx: "요리사가 맛있는 파스타를 만들고 있어요."
+        },
+        {
+            id: 77,
+            study_date: '2026-08-14',
+            week: 2,
+            day: 'Fri',
+            word: "teacher",
+            meaning: "선생님",
+            example: "Our teacher is very kind.",
+            korEx: "우리 선생님은 매우 친절해요."
+        },
+        {
+            id: 78,
+            study_date: '2026-08-14',
+            week: 2,
+            day: 'Fri',
+            word: "nurse",
+            meaning: "간호사",
+            example: "The nurse takes care of the patients.",
+            korEx: "간호사 선생님이 환자들을 돌봐주세요."
+        },
+        {
+            id: 79,
+            study_date: '2026-08-19',
+            week: 3,
+            day: 'Wed',
+            word: "bus-driver",
+            meaning: "버스 기사",
+            example: "The bus-driver drives safely.",
+            korEx: "버스 기사님이 안전하게 운전해요."
+        },
+        {
+            id: 80,
+            study_date: '2026-08-19',
+            week: 3,
+            day: 'Wed',
+            word: "student",
+            meaning: "학생",
+            example: "She is a hard-working student.",
+            korEx: "그녀는 열심히 공부하는 학생이에요."
+        },
+        {
+            id: 81,
+            study_date: '2026-08-21',
+            week: 3,
+            day: 'Fri',
+            word: "singers",
+            meaning: "가수들",
+            example: "The singers are on the stage.",
+            korEx: "가수들이 무대 위에 있어요."
+        },
+        {
+            id: 82,
+            study_date: '2026-08-21',
+            week: 3,
+            day: 'Fri',
+            word: "dancers",
+            meaning: "춤추는 사람들 / 댄서들",
+            example: "The dancers are moving to the music.",
+            korEx: "댄서들이 음악에 맞춰 춤을 추고 있어요."
+        },
+        {
+            id: 83,
+            study_date: '2026-08-24',
+            week: 4,
+            day: 'Mon',
+            word: "farmers",
+            meaning: "농부들",
+            example: "The farmers grow fresh vegetables.",
+            korEx: "농부들이 신선한 야채를 재배해요."
+        },
+        {
+            id: 84,
+            study_date: '2026-08-24',
+            week: 4,
+            day: 'Mon',
+            word: "vets",
+            meaning: "수의사들",
+            example: "Vets treat sick animals.",
+            korEx: "수의사들은 아픈 동물들을 치료해 줘요."
+        },
+        {
+            id: 85,
+            study_date: '2026-08-26',
+            week: 4,
+            day: 'Wed',
+            word: "firefighters",
+            meaning: "소방관들",
+            example: "Brave firefighters put out fires.",
+            korEx: "용감한 소방관들이 불을 끕니다."
+        },
+        {
+            id: 86,
+            study_date: '2026-08-26',
+            week: 4,
+            day: 'Wed',
+            word: "police-officers",
+            meaning: "경찰관들",
+            example: "Police-officers keep our city safe.",
+            korEx: "경찰관들이 우리 도시를 안전하게 지켜줘요."
         }
     ];
 
