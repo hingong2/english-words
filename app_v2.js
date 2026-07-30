@@ -18,6 +18,96 @@ let wordData = {
 };
 let rawWords = [];
 
+function detectCycles(words) {
+    const validWords = words.filter(w => w.study_date && w.week && w.day);
+    validWords.sort((a, b) => a.study_date.localeCompare(b.study_date));
+    
+    const cycles = [];
+    let currentCycle = [];
+    
+    for (let i = 0; i < validWords.length; i++) {
+        const item = validWords[i];
+        const prevItem = currentCycle[currentCycle.length - 1];
+        
+        let startNewCycle = false;
+        if (currentCycle.length === 0) {
+            startNewCycle = true;
+        } else {
+            const weekDecreased = item.week < prevItem.week;
+            const currentDate = new Date(item.study_date);
+            const prevDate = new Date(prevItem.study_date);
+            const gapDays = (currentDate - prevDate) / (1000 * 60 * 60 * 24);
+            
+            if (weekDecreased || gapDays > 14) {
+                startNewCycle = true;
+            }
+        }
+        
+        if (startNewCycle) {
+            if (currentCycle.length > 0) {
+                cycles.push(currentCycle);
+            }
+            currentCycle = [item];
+        } else {
+            currentCycle.push(item);
+        }
+    }
+    
+    if (currentCycle.length > 0) {
+        cycles.push(currentCycle);
+    }
+    
+    return cycles;
+}
+
+function getActiveCycle(cycles, todayStr) {
+    if (cycles.length === 0) return null;
+    
+    // Find if today falls inside any cycle's range
+    for (const cycle of cycles) {
+        const minDate = cycle[0].study_date;
+        const maxDate = cycle[cycle.length - 1].study_date;
+        if (todayStr >= minDate && todayStr <= maxDate) {
+            return cycle;
+        }
+    }
+    
+    // If today is before the first cycle
+    if (todayStr < cycles[0][0].study_date) {
+        return cycles[0];
+    }
+    
+    // If today is after the last cycle
+    const lastCycle = cycles[cycles.length - 1];
+    if (todayStr > lastCycle[lastCycle.length - 1].study_date) {
+        return lastCycle;
+    }
+    
+    // Otherwise find closest cycle
+    let closestCycle = cycles[0];
+    let minDiff = Infinity;
+    
+    for (const cycle of cycles) {
+        const start = new Date(cycle[0].study_date);
+        const end = new Date(cycle[cycle.length - 1].study_date);
+        const today = new Date(todayStr);
+        
+        let diff = 0;
+        if (today < start) {
+            diff = (start - today) / (1000 * 60 * 60 * 24);
+        } else if (today > end) {
+            diff = (today - end) / (1000 * 60 * 60 * 24);
+        }
+        
+        if (diff < minDiff) {
+            minDiff = diff;
+            closestCycle = cycle;
+        }
+    }
+    
+    return closestCycle;
+}
+
 async function fetchAllWords() {
     const hardcoded = [
         {
@@ -262,6 +352,7 @@ async function fetchAllWords() {
         }
     ];
 
+    let allWords = [];
     try {
         const response = await fetch(`${API_URL}/words`);
         if (!response.ok) throw new Error('Network response was not ok');
@@ -269,12 +360,110 @@ async function fetchAllWords() {
 
         const fetchedIds = new Set(data.map(item => item.word?.toLowerCase()));
         const uniqueHardcoded = hardcoded.filter(item => !fetchedIds.has(item.word?.toLowerCase()));
-        rawWords = [...uniqueHardcoded, ...data];
+        allWords = [...uniqueHardcoded, ...data];
 
         console.log('Data synced from DB');
     } catch (err) {
         console.error('Error fetching words, using hardcoded fallback:', err);
-        rawWords = hardcoded;
+        allWords = hardcoded;
+    }
+
+    // Filter words belonging to the active cycle
+    const cycles = detectCycles(allWords);
+    const todayStr = getLocalDateString(new Date());
+    const activeCycle = getActiveCycle(cycles, todayStr);
+    
+    if (activeCycle && activeCycle.length > 0) {
+        rawWords = activeCycle;
+
+        // Dynamically calculate and update dateMapping by finding the actual start Monday of each week in the database
+        const weeksMonday = { 1: null, 2: null, 3: null, 4: null };
+
+        for (let w = 1; w <= 4; w++) {
+            const weekWords = activeCycle.filter(word => Number(word.week) === w);
+            if (weekWords.length > 0) {
+                let minDateStr = weekWords[0].study_date;
+                weekWords.forEach(word => {
+                    if (word.study_date < minDateStr) {
+                        minDateStr = word.study_date;
+                    }
+                });
+                
+                // Parse timezone-agnostically in local time
+                const parts = minDateStr.split('-');
+                const minDate = new Date(parseInt(parts[0]), parseInt(parts[1]) - 1, parseInt(parts[2]));
+                const dayOfWeek = minDate.getDay();
+                let monDate;
+                if (dayOfWeek === 0) { // Sunday
+                    monDate = new Date(minDate.getTime() - 6 * 24 * 60 * 60 * 1000);
+                } else {
+                    monDate = new Date(minDate.getTime() - (dayOfWeek - 1) * 24 * 60 * 60 * 1000);
+                }
+                weeksMonday[w] = monDate;
+            }
+        }
+
+        // Propagate Monday dates forward if a week has no words registered
+        if (!weeksMonday[1]) {
+            const firstDateStr = activeCycle[0].study_date;
+            const parts = firstDateStr.split('-');
+            const firstDate = new Date(parseInt(parts[0]), parseInt(parts[1]) - 1, parseInt(parts[2]));
+            const dayOfWeek = firstDate.getDay();
+            let monDate;
+            if (dayOfWeek === 0) {
+                monDate = new Date(firstDate.getTime() - 6 * 24 * 60 * 60 * 1000);
+            } else {
+                monDate = new Date(firstDate.getTime() - (dayOfWeek - 1) * 24 * 60 * 60 * 1000);
+            }
+            weeksMonday[1] = monDate;
+        }
+
+        for (let w = 2; w <= 4; w++) {
+            if (!weeksMonday[w]) {
+                weeksMonday[w] = new Date(weeksMonday[w - 1].getTime() + 7 * 24 * 60 * 60 * 1000);
+            }
+        }
+
+        const mapping = {
+            1: { Mon: null, Wed: null, Fri: null },
+            2: { Mon: null, Wed: null, Fri: null },
+            3: { Mon: null, Wed: null, Fri: null },
+            4: { Mon: null, Wed: null, Fri: null }
+        };
+
+        for (let w = 1; w <= 4; w++) {
+            const monDate = weeksMonday[w];
+            const wedDate = new Date(monDate.getTime() + 2 * 24 * 60 * 60 * 1000);
+            const friDate = new Date(monDate.getTime() + 4 * 24 * 60 * 60 * 1000);
+
+            mapping[w].Mon = {
+                label: `${monDate.getMonth() + 1}/${monDate.getDate()}`,
+                dateStr: getLocalDateString(monDate)
+            };
+            mapping[w].Wed = {
+                label: `${wedDate.getMonth() + 1}/${wedDate.getDate()}`,
+                dateStr: getLocalDateString(wedDate)
+            };
+            mapping[w].Fri = {
+                label: `${friDate.getMonth() + 1}/${friDate.getDate()}`,
+                dateStr: getLocalDateString(friDate)
+            };
+        }
+
+        activeCycle.forEach(word => {
+            if (mapping[word.week] && mapping[word.week][word.day]) {
+                const parts = word.study_date.split('-');
+                const itemDate = new Date(parseInt(parts[0]), parseInt(parts[1]) - 1, parseInt(parts[2]));
+                mapping[word.week][word.day] = {
+                    label: `${itemDate.getMonth() + 1}/${itemDate.getDate()}`,
+                    dateStr: word.study_date
+                };
+            }
+        });
+
+        dateMapping = mapping;
+    } else {
+        rawWords = allWords;
     }
 
     // Reset wordData
@@ -419,11 +608,55 @@ function speak(text, isExciting = false) {
 
 function getWeekAndDayFromDate(dateStr) {
     if (!dateStr) return { week: 1, day: 'Mon' };
-    const parts = dateStr.split('T')[0].split(' ')[0].split('-');
+    const cleanDateStr = dateStr.split('T')[0].split(' ')[0];
+
+    // 1. Search dateMapping
+    for (let w = 1; w <= 4; w++) {
+        for (const d of ['Mon', 'Wed', 'Fri']) {
+            if (dateMapping[w] && dateMapping[w][d] && dateMapping[w][d].dateStr === cleanDateStr) {
+                return { week: w, day: d };
+            }
+        }
+    }
+
+    // 2. Fall back to activeCycle's relative calculation
+    const parts = cleanDateStr.split('-');
     if (parts.length < 3) return { week: 1, day: 'Mon' };
     const dateObj = new Date(parseInt(parts[0]), parseInt(parts[1]) - 1, parseInt(parts[2]));
     if (isNaN(dateObj.getTime())) return { week: 1, day: 'Mon' };
 
+    let startMonday = null;
+    const allStoredWords = rawWords.filter(w => w.study_date);
+    if (allStoredWords.length > 0) {
+        const cycleStartDate = new Date(allStoredWords[0].study_date);
+        const dayOfWeek = cycleStartDate.getDay();
+        if (dayOfWeek === 0) {
+            startMonday = new Date(cycleStartDate.getTime() - 6 * 24 * 60 * 60 * 1000);
+        } else {
+            startMonday = new Date(cycleStartDate.getTime() - (dayOfWeek - 1) * 24 * 60 * 60 * 1000);
+        }
+    }
+
+    if (startMonday) {
+        const diffTime = dateObj.getTime() - startMonday.getTime();
+        const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+
+        let week = 1;
+        if (diffDays < 7) week = 1;
+        else if (diffDays < 14) week = 2;
+        else if (diffDays < 21) week = 3;
+        else week = 4;
+
+        const dayOfWeek = dateObj.getDay();
+        let day = 'Mon';
+        if (dayOfWeek === 1 || dayOfWeek === 2) day = 'Mon';
+        else if (dayOfWeek === 3 || dayOfWeek === 4) day = 'Wed';
+        else day = 'Fri';
+
+        return { week, day };
+    }
+
+    // 3. Fallback to generic month first-Monday logic if no rawWords exist
     function getStartMonday(y, m) {
         const first = new Date(y, m, 1);
         const dayOfWeek = first.getDay();
@@ -437,24 +670,23 @@ function getWeekAndDayFromDate(dateStr) {
     const year = dateObj.getFullYear();
     const month = dateObj.getMonth();
 
-    // Check if this date belongs to the NEXT month's Week 1
     const nextMonthDate = new Date(year, month + 1, 1);
     const nextStartMonday = getStartMonday(nextMonthDate.getFullYear(), nextMonthDate.getMonth());
 
-    let startMonday;
+    let finalStartMonday;
     if (dateObj >= nextStartMonday) {
-        startMonday = nextStartMonday;
+        finalStartMonday = nextStartMonday;
     } else {
         const currStartMonday = getStartMonday(year, month);
         if (dateObj < currStartMonday) {
             const prevMonthDate = new Date(year, month - 1, 1);
-            startMonday = getStartMonday(prevMonthDate.getFullYear(), prevMonthDate.getMonth());
+            finalStartMonday = getStartMonday(prevMonthDate.getFullYear(), prevMonthDate.getMonth());
         } else {
-            startMonday = currStartMonday;
+            finalStartMonday = currStartMonday;
         }
     }
 
-    const diffTime = dateObj.getTime() - startMonday.getTime();
+    const diffTime = dateObj.getTime() - finalStartMonday.getTime();
     const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
 
     let week = 1;
@@ -498,16 +730,12 @@ async function startApp() {
 
     speak("Welcome, " + userName + "! Let's study English!", true);
 
-    // 오늘 날짜에 맞는 주차와 요일 자동 계산 및 탭 적용
-    const today = new Date();
-    const todayStr = getLocalDateString(today);
-    const initDate = getWeekAndDayFromDate(todayStr);
-
-    // 현재 월에 해당하는 dateMapping 생성 및 업데이트
-    dateMapping = generateDateMapping(today.getFullYear(), today.getMonth());
-
     // 초기 데이터 로딩 후 앱 시작
     fetchAllWords().then(() => {
+        // 오늘 날짜에 맞는 주차와 요일 자동 계산 및 탭 적용
+        const today = new Date();
+        const todayStr = getLocalDateString(today);
+        const initDate = getWeekAndDayFromDate(todayStr);
         switchWeek(initDate.week, initDate.day);
     });
 }
