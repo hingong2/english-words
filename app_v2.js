@@ -109,7 +109,7 @@ function getActiveCycle(cycles, todayStr) {
 }
 
 async function fetchAllWords() {
-    const hardcoded = [
+        const hardcoded = [
         {
             id: 1,
             study_date: '2026-03-04',
@@ -879,6 +879,246 @@ async function fetchAllWords() {
             meaning: "경찰관들",
             example: "Police-officers keep our city safe.",
             korEx: "경찰관들이 우리 도시를 안전하게 지켜줘요."
+        },
+        {
+            id: 87,
+            study_date: '2026-09-02',
+            week: 1,
+            day: 'Wed',
+            word: "one-o'clock",
+            meaning: "1시",
+            example: "It is one-o'clock now.",
+            korEx: "지금은 1시예요."
+        },
+        {
+            id: 88,
+            study_date: '2026-09-02',
+            week: 1,
+            day: 'Wed',
+            word: "one ten",
+            meaning: "1시 10분",
+            example: "The bus comes at one ten.",
+            korEx: "버스는 1시 10분에 와요."
+        },
+        {
+            id: 89,
+            study_date: '2026-09-04',
+            week: 1,
+            day: 'Fri',
+            word: "one-fifteen",
+            meaning: "1시 15분",
+            example: "Class starts at one-fifteen.",
+            korEx: "수업은 1시 15분에 시작해요."
+        },
+        {
+            id: 90,
+            study_date: '2026-09-04',
+            week: 1,
+            day: 'Fri',
+            word: "one thirty",
+            meaning: "1시 30분",
+            example: "Let's meet at one thirty.",
+            korEx: "우리 1시 30분에 만나요."
+        },
+        {
+            id: 91,
+            study_date: '2026-09-07',
+            week: 2,
+            day: 'Mon',
+            word: "one-forty-five",
+            meaning: "1시 45분",
+            example: "I finish my lunch at one-forty-five.",
+            korEx: "나는 1시 45분에 점심을 다 먹어요."
+        },
+        {
+            id: 92,
+            study_date: '2026-09-07',
+            week: 2,
+            day: 'Mon',
+            word: "two-o'clock",
+            meaning: "2시",
+            example: "The cartoon begins at two-o'clock.",
+            korEx: "만화 영화가 2시에 시작해요."
+        },
+        {
+            id: 93,
+            study_date: '2026-09-09',
+            week: 2,
+            day: 'Wed',
+            word: "get up",
+            meaning: "일어나다",
+            example: "I get up early in the morning.",
+            korEx: "나는 아침에 일찍 일어나요."
+        },
+        {
+            id: 94,
+            study_date: '2026-09-09',
+            week: 2,
+            day: 'Wed',
+            word: "eat-breakfast",
+            meaning: "아침을 먹다",
+            example: "I eat breakfast with my family.",
+            korEx: "나는 가족과 함께 아침을 먹어요."
+        },
+        {
+            id: 95,
+            study_date: '2026-09-11',
+            week: 2,
+            day: 'Fri',
+            word: "go to school",
+            meaning: "학교에 가다",
+            example: "I go to school by bus.",
+            korEx: "나는 버스를 타고 학교에 가요."
+        },
+        {
+            id: 96,
+            study_date: '2026-09-11',
+            week: 2,
+            day: 'Fri',
+            word: "eat lunch",
+            meaning: "점심을 먹다",
+            example: "We eat lunch at twelve o'clock.",
+            korEx: "우리는 12시에 점심을 먹어요."
+        },
+        {
+            id: 97,
+            study_date: '2026-09-14',
+            week: 3,
+            day: 'Mon',
+            word: "eat dinner",
+            meaning: "저녁을 먹다",
+            example: "We eat dinner together.",
+            korEx: "우리는 다 함께 저녁을 먹어요."
+        },
+        {
+            id: 98,
+            study_date: '2026-09-14',
+            week: 3,
+            day: 'Mon',
+            word: "go to bed",
+            meaning: "잠자리에 들다 / 자러 가다",
+            example: "I go to bed at nine o'clock.",
+            korEx: "나는 9시에 자러 가요."
+        },
+        {
+            id: 99,
+            study_date: '2026-09-16',
+            week: 3,
+            day: 'Wed',
+            word: "guitar",
+            meaning: "기타",
+            example: "My brother plays the guitar.",
+            korEx: "우리 오빠는 기타를 쳐요."
+        },
+        {
+            id: 100,
+            study_date: '2026-09-16',
+            week: 3,
+            day: 'Wed',
+            word: "flute",
+            meaning: "플루트",
+            example: "She plays the flute very well.",
+            korEx: "그녀는 플루트를 아주 잘 연주해요."
+        },
+        {
+            id: 101,
+            study_date: '2026-09-16',
+            week: 3,
+            day: 'Wed',
+            word: "violin",
+            meaning: "바이올린",
+            example: "The violin makes a sweet sound.",
+            korEx: "바이올린은 아름다운 소리를 내요."
+        },
+        {
+            id: 102,
+            study_date: '2026-09-18',
+            week: 3,
+            day: 'Fri',
+            word: "cello",
+            meaning: "첼로",
+            example: "The cello is big and heavy.",
+            korEx: "첼로는 크고 무거워요."
+        },
+        {
+            id: 103,
+            study_date: '2026-09-18',
+            week: 3,
+            day: 'Fri',
+            word: "piano",
+            meaning: "피아노",
+            example: "I practice the piano every day.",
+            korEx: "나는 매일 피아노를 연습해요."
+        },
+        {
+            id: 104,
+            study_date: '2026-09-18',
+            week: 3,
+            day: 'Fri',
+            word: "drums",
+            meaning: "드럼",
+            example: "He loves beating the drums.",
+            korEx: "그는 신나게 드럼 치는 것을 좋아해요."
+        },
+        {
+            id: 105,
+            study_date: '2026-09-21',
+            week: 4,
+            day: 'Mon',
+            word: "soccer",
+            meaning: "축구",
+            example: "We play soccer after school.",
+            korEx: "우리는 방과 후에 축구를 해요."
+        },
+        {
+            id: 106,
+            study_date: '2026-09-21',
+            week: 4,
+            day: 'Mon',
+            word: "baseball",
+            meaning: "야구",
+            example: "He catches the baseball with a glove.",
+            korEx: "그는 글러브로 야구공을 잡아요."
+        },
+        {
+            id: 107,
+            study_date: '2026-09-21',
+            week: 4,
+            day: 'Mon',
+            word: "basketball",
+            meaning: "농구",
+            example: "Basketball is my favorite sport.",
+            korEx: "농구는 내가 가장 좋아하는 운동이에요."
+        },
+        {
+            id: 108,
+            study_date: '2026-09-23',
+            week: 4,
+            day: 'Wed',
+            word: "badminton",
+            meaning: "배드민턴",
+            example: "I play badminton in the park.",
+            korEx: "나는 공원에서 배드민턴을 쳐요."
+        },
+        {
+            id: 109,
+            study_date: '2026-09-23',
+            week: 4,
+            day: 'Wed',
+            word: "volleyball",
+            meaning: "배구",
+            example: "They hit the ball in volleyball.",
+            korEx: "그들은 배구를 할 때 공을 쳐요."
+        },
+        {
+            id: 110,
+            study_date: '2026-09-23',
+            week: 4,
+            day: 'Wed',
+            word: "table-tennis",
+            meaning: "탁구",
+            example: "Table-tennis is so much fun.",
+            korEx: "탁구는 정말 재미있어요."
         }
     ];
 
