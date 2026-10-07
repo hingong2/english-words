@@ -14,7 +14,8 @@ let wordData = {
     1: { Mon: [], Wed: [], Fri: [] },
     2: { Mon: [], Wed: [], Fri: [] },
     3: { Mon: [], Wed: [], Fri: [] },
-    4: { Mon: [], Wed: [], Fri: [] }
+    4: { Mon: [], Wed: [], Fri: [] },
+    5: { Mon: [], Wed: [], Fri: [] }
 };
 let rawWords = [];
 
@@ -1119,6 +1120,246 @@ async function fetchAllWords() {
             meaning: "탁구",
             example: "Table-tennis is so much fun.",
             korEx: "탁구는 정말 재미있어요."
+        },
+        {
+            id: 111,
+            study_date: '2026-09-30',
+            week: 1,
+            day: 'Wed',
+            word: "study",
+            meaning: "공부하다",
+            example: "I study English with my friends.",
+            korEx: "나는 친구들과 함께 영어를 공부해요."
+        },
+        {
+            id: 112,
+            study_date: '2026-09-30',
+            week: 1,
+            day: 'Wed',
+            word: "draw",
+            meaning: "그리다",
+            example: "She likes to draw cute animals.",
+            korEx: "그녀는 귀여운 동물 그리는 것을 좋아해요."
+        },
+        {
+            id: 113,
+            study_date: '2026-09-30',
+            week: 1,
+            day: 'Wed',
+            word: "talk",
+            meaning: "말하다 / 이야기하다",
+            example: "We talk about our favorite books.",
+            korEx: "우리는 우리가 가장 좋아하는 책에 대해 이야기해요."
+        },
+        {
+            id: 114,
+            study_date: '2026-10-02',
+            week: 1,
+            day: 'Fri',
+            word: "drink",
+            meaning: "마시다",
+            example: "I drink a cup of warm milk.",
+            korEx: "나는 따뜻한 우유 한 잔을 마셔요."
+        },
+        {
+            id: 115,
+            study_date: '2026-10-02',
+            week: 1,
+            day: 'Fri',
+            word: "eat",
+            meaning: "먹다",
+            example: "They eat sweet apples together.",
+            korEx: "그들은 달콤한 사과를 함께 먹어요."
+        },
+        {
+            id: 116,
+            study_date: '2026-10-02',
+            week: 1,
+            day: 'Fri',
+            word: "write",
+            meaning: "쓰다",
+            example: "I write a letter to my friend.",
+            korEx: "나는 친구에게 편지를 써요."
+        },
+        {
+            id: 117,
+            study_date: '2026-10-07',
+            week: 2,
+            day: 'Wed',
+            word: "dance",
+            meaning: "춤추다",
+            example: "Let's dance to the fun music!",
+            korEx: "신나는 음악에 맞춰 춤추자!"
+        },
+        {
+            id: 118,
+            study_date: '2026-10-07',
+            week: 2,
+            day: 'Wed',
+            word: "sing",
+            meaning: "노래하다",
+            example: "The birds sing in the morning.",
+            korEx: "새들이 아침에 노래해요."
+        },
+        {
+            id: 119,
+            study_date: '2026-10-07',
+            week: 2,
+            day: 'Wed',
+            word: "jump",
+            meaning: "뛰다 / 점프하다",
+            example: "I can jump very high.",
+            korEx: "나는 아주 높이 뛸 수 있어요."
+        },
+        {
+            id: 120,
+            study_date: '2026-10-12',
+            week: 3,
+            day: 'Mon',
+            word: "walk",
+            meaning: "걷다",
+            example: "We walk in the park with our dog.",
+            korEx: "우리는 강아지와 함께 공원을 걸어요."
+        },
+        {
+            id: 121,
+            study_date: '2026-10-12',
+            week: 3,
+            day: 'Mon',
+            word: "laugh",
+            meaning: "웃다",
+            example: "The funny clowns make us laugh.",
+            korEx: "재미있는 광대들이 우리를 웃게 해요."
+        },
+        {
+            id: 122,
+            study_date: '2026-10-12',
+            week: 3,
+            day: 'Mon',
+            word: "run",
+            meaning: "달리다",
+            example: "He can run really fast.",
+            korEx: "그는 정말 빠르게 달릴 수 있어요."
+        },
+        {
+            id: 123,
+            study_date: '2026-10-14',
+            week: 3,
+            day: 'Wed',
+            word: "lamp",
+            meaning: "스탠드 / 램프",
+            example: "Turn on the desk lamp, please.",
+            korEx: "책상 램프를 켜 주세요."
+        },
+        {
+            id: 124,
+            study_date: '2026-10-14',
+            week: 3,
+            day: 'Wed',
+            word: "mirror",
+            meaning: "거울",
+            example: "I see my smile in the mirror.",
+            korEx: "나는 거울 속 내 웃는 모습을 봐요."
+        },
+        {
+            id: 125,
+            study_date: '2026-10-16',
+            week: 3,
+            day: 'Fri',
+            word: "bookcase",
+            meaning: "책장",
+            example: "Put the storybook in the bookcase.",
+            korEx: "동화책을 책장에 꽂아 두렴."
+        },
+        {
+            id: 126,
+            study_date: '2026-10-16',
+            week: 3,
+            day: 'Fri',
+            word: "bed",
+            meaning: "침대",
+            example: "My soft bed is very cozy.",
+            korEx: "내 부드러운 침대는 정말 포근해요."
+        },
+        {
+            id: 127,
+            study_date: '2026-10-19',
+            week: 4,
+            day: 'Mon',
+            word: "dresser",
+            meaning: "서랍장 / 옷장",
+            example: "Keep your clean socks in the dresser.",
+            korEx: "깨끗한 양말을 서랍장에 넣어 두렴."
+        },
+        {
+            id: 128,
+            study_date: '2026-10-19',
+            week: 4,
+            day: 'Mon',
+            word: "sofa",
+            meaning: "소파",
+            example: "We sit on the comfortable sofa.",
+            korEx: "우리는 편안한 소파에 앉아요."
+        },
+        {
+            id: 129,
+            study_date: '2026-10-21',
+            week: 4,
+            day: 'Wed',
+            word: "bedroom",
+            meaning: "침실 / 방",
+            example: "I sleep in my cozy bedroom.",
+            korEx: "나는 아늑한 내 방에서 잠을 자요."
+        },
+        {
+            id: 130,
+            study_date: '2026-10-21',
+            week: 4,
+            day: 'Wed',
+            word: "kitchen",
+            meaning: "주방 / 부엌",
+            example: "Mom is cooking dinner in the kitchen.",
+            korEx: "엄마가 주방에서 저녁을 만들고 계세요."
+        },
+        {
+            id: 131,
+            study_date: '2026-10-23',
+            week: 4,
+            day: 'Fri',
+            word: "living room",
+            meaning: "거실",
+            example: "Our family gathers in the living room.",
+            korEx: "우리 가족은 거실에 다 함께 모여요."
+        },
+        {
+            id: 132,
+            study_date: '2026-10-23',
+            week: 4,
+            day: 'Fri',
+            word: "bathroom",
+            meaning: "욕실",
+            example: "Wash your hands clean in the bathroom.",
+            korEx: "욕실에서 손을 깨끗하게 씻으렴."
+        },
+        {
+            id: 133,
+            study_date: '2026-10-26',
+            week: 5,
+            day: 'Mon',
+            word: "attic",
+            meaning: "다락",
+            example: "We found an old treasure box in the attic.",
+            korEx: "우리는 다락방에서 오래된 보물 상자를 찾았어요."
+        },
+        {
+            id: 134,
+            study_date: '2026-10-26',
+            week: 5,
+            day: 'Mon',
+            word: "garage",
+            meaning: "차고 / 주차장",
+            example: "Dad parks the car in the garage.",
+            korEx: "아빠가 차고에 차를 주차하세요."
         }
     ];
 
@@ -1147,9 +1388,17 @@ async function fetchAllWords() {
         rawWords = activeCycle;
 
         // Dynamically calculate and update dateMapping by finding the actual start Monday of each week in the database
-        const weeksMonday = { 1: null, 2: null, 3: null, 4: null };
+        let maxWeek = 4;
+        activeCycle.forEach(word => {
+            if (Number(word.week) > maxWeek) maxWeek = Number(word.week);
+        });
 
-        for (let w = 1; w <= 4; w++) {
+        const weeksMonday = {};
+        for (let w = 1; w <= maxWeek; w++) {
+            weeksMonday[w] = null;
+        }
+
+        for (let w = 1; w <= maxWeek; w++) {
             const weekWords = activeCycle.filter(word => Number(word.week) === w);
             if (weekWords.length > 0) {
                 let minDateStr = weekWords[0].study_date;
@@ -1188,20 +1437,18 @@ async function fetchAllWords() {
             weeksMonday[1] = monDate;
         }
 
-        for (let w = 2; w <= 4; w++) {
+        for (let w = 2; w <= maxWeek; w++) {
             if (!weeksMonday[w]) {
                 weeksMonday[w] = new Date(weeksMonday[w - 1].getTime() + 7 * 24 * 60 * 60 * 1000);
             }
         }
 
-        const mapping = {
-            1: { Mon: null, Wed: null, Fri: null },
-            2: { Mon: null, Wed: null, Fri: null },
-            3: { Mon: null, Wed: null, Fri: null },
-            4: { Mon: null, Wed: null, Fri: null }
-        };
+        const mapping = {};
+        for (let w = 1; w <= maxWeek; w++) {
+            mapping[w] = { Mon: null, Wed: null, Fri: null };
+        }
 
-        for (let w = 1; w <= 4; w++) {
+        for (let w = 1; w <= maxWeek; w++) {
             const monDate = weeksMonday[w];
             const wedDate = new Date(monDate.getTime() + 2 * 24 * 60 * 60 * 1000);
             const friDate = new Date(monDate.getTime() + 4 * 24 * 60 * 60 * 1000);
@@ -1237,12 +1484,11 @@ async function fetchAllWords() {
     }
 
     // Reset wordData
-    wordData = {
-        1: { Mon: [], Wed: [], Fri: [] },
-        2: { Mon: [], Wed: [], Fri: [] },
-        3: { Mon: [], Wed: [], Fri: [] },
-        4: { Mon: [], Wed: [], Fri: [] }
-    };
+    wordData = {};
+    const totalWeeks = Object.keys(dateMapping).length || 5;
+    for (let w = 1; w <= totalWeeks; w++) {
+        wordData[w] = { Mon: [], Wed: [], Fri: [] };
+    }
 
     rawWords.forEach(item => {
         if (wordData[item.week] && wordData[item.week][item.day]) {
@@ -1259,12 +1505,11 @@ async function fetchAllWords() {
 }
 
 function generateDateMapping(year, month) {
-    const mapping = {
-        1: { Mon: null, Wed: null, Fri: null },
-        2: { Mon: null, Wed: null, Fri: null },
-        3: { Mon: null, Wed: null, Fri: null },
-        4: { Mon: null, Wed: null, Fri: null }
-    };
+    const maxWeek = 5;
+    const mapping = {};
+    for (let week = 1; week <= maxWeek; week++) {
+        mapping[week] = { Mon: null, Wed: null, Fri: null };
+    }
 
     function getStartMonday(y, m) {
         const first = new Date(y, m, 1);
@@ -1278,7 +1523,7 @@ function generateDateMapping(year, month) {
 
     const startMonday = getStartMonday(year, month);
 
-    for (let week = 1; week <= 4; week++) {
+    for (let week = 1; week <= maxWeek; week++) {
         const monDate = new Date(startMonday.getTime() + (week - 1) * 7 * 24 * 60 * 60 * 1000);
         const wedDate = new Date(monDate.getTime() + 2 * 24 * 60 * 60 * 1000);
         const friDate = new Date(monDate.getTime() + 4 * 24 * 60 * 60 * 1000);
@@ -1381,7 +1626,8 @@ function getWeekAndDayFromDate(dateStr) {
     const cleanDateStr = dateStr.split('T')[0].split(' ')[0];
 
     // 1. Search dateMapping
-    for (let w = 1; w <= 4; w++) {
+    const totalWeeks = Object.keys(dateMapping).length || 5;
+    for (let w = 1; w <= totalWeeks; w++) {
         for (const d of ['Mon', 'Wed', 'Fri']) {
             if (dateMapping[w] && dateMapping[w][d] && dateMapping[w][d].dateStr === cleanDateStr) {
                 return { week: w, day: d };
@@ -1415,7 +1661,8 @@ function getWeekAndDayFromDate(dateStr) {
         if (diffDays < 7) week = 1;
         else if (diffDays < 14) week = 2;
         else if (diffDays < 21) week = 3;
-        else week = 4;
+        else if (diffDays < 28) week = 4;
+        else week = 5;
 
         const dayOfWeek = dateObj.getDay();
         let day = 'Mon';
@@ -1752,17 +1999,31 @@ async function deleteWord(id) {
     }
 }
 
+function renderWeekTabs() {
+    const container = document.getElementById('weekTabs');
+    if (!container) return;
+
+    let maxWeek = 4;
+    if (dateMapping) {
+        Object.keys(dateMapping).forEach(w => {
+            if (Number(w) > maxWeek) maxWeek = Number(w);
+        });
+    }
+
+    let html = '';
+    for (let w = 1; w <= maxWeek; w++) {
+        const isActive = (w === currentWeek);
+        const btnClass = isActive
+            ? 'flex-shrink-0 px-4 py-2 rounded-full font-bold text-sm bg-blue-600 text-white border-2 border-transparent transition-all'
+            : 'flex-shrink-0 px-4 py-2 rounded-full font-bold text-sm bg-white text-blue-600 border-2 border-blue-200 transition-all shadow-sm hover:bg-blue-50';
+        html += `<button onclick="switchWeek(${w})" class="${btnClass}">Week ${w}</button>`;
+    }
+    container.innerHTML = html;
+}
+
 function switchWeek(week, forceDay = 'Mon') {
     currentWeek = week;
-    document.querySelectorAll('#weekTabs button').forEach(b => {
-        if (b.innerText.trim() === 'Week ' + week) {
-            b.classList.add('bg-blue-600', 'text-white', 'border-transparent');
-            b.classList.remove('bg-white', 'text-blue-600', 'border-blue-200');
-        } else {
-            b.classList.remove('bg-blue-600', 'text-white', 'border-transparent');
-            b.classList.add('bg-white', 'text-blue-600', 'border-blue-200');
-        }
-    });
+    renderWeekTabs();
 
     // Update dates for main day tabs
     if (dateMapping[week]) {
